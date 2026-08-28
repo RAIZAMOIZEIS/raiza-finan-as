@@ -1,614 +1,1422 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#2563eb">
-<title>RAÍZA FINANÇAS</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Raíza Finanças</title>
 
-<style>
-:root{
- --azul:#2563eb;--verde:#16a34a;--vermelho:#dc2626;
- --cinza:#f1f3f6;--texto:#1f2937;--borda:#e5e7eb;
-}
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:var(--cinza);color:var(--texto)}
-.app{display:flex;min-height:100vh}
+  <style>
+    :root {
+      --azul: #2563eb;
+      --azul-escuro: #1d4ed8;
+      --verde: #16a34a;
+      --vermelho: #dc2626;
+      --amarelo: #f59e0b;
+      --roxo: #7c3aed;
+      --cinza: #f1f3f6;
+      --cinza-escuro: #64748b;
+      --texto: #1f2937;
+      --borda: #e2e8f0;
+      --branco: #ffffff;
+    }
 
-aside{
- width:240px;background:#fff;padding:20px;
- border-right:1px solid var(--borda)
-}
-.logo{font-size:22px;font-weight:bold;color:var(--azul);margin-bottom:25px}
-.logo small{display:block;font-size:10px;letter-spacing:4px;color:#64748b}
+    * {
+      box-sizing: border-box;
+    }
 
-nav button{
- width:100%;border:0;background:transparent;padding:13px;
- text-align:left;border-radius:10px;margin:3px 0;
- cursor:pointer;font-size:14px
-}
-nav button:hover,nav button.active{
- background:#e8efff;color:var(--azul);font-weight:bold
-}
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: var(--cinza);
+      color: var(--texto);
+    }
 
-main{flex:1;padding:28px;max-width:1500px;margin:auto}
-.topo{display:flex;justify-content:space-between;align-items:center}
-.topo h1{margin:0;font-size:26px}
-.topo p{color:#64748b}
+    .app {
+      min-height: 100vh;
+    }
 
-.olho{
- border:0;background:#fff;border-radius:10px;
- padding:10px;font-size:20px;cursor:pointer
-}
+    /* TOPO */
+    header {
+      background: linear-gradient(135deg, var(--azul), var(--azul-escuro));
+      color: white;
+      padding: 18px 25px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
 
-.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px}
-.card{
- background:#fff;border-radius:16px;padding:20px;
- border:1px solid var(--borda)
-}
-.card h3{font-size:14px;margin:0 0 10px;color:#64748b}
-.valor{font-size:28px;font-weight:bold}
-.verde{color:var(--verde)}
-.vermelho{color:var(--vermelho)}
-.azul{color:var(--azul)}
+    .logo {
+      font-size: 25px;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
 
-.grid{
- display:grid;grid-template-columns:1.3fr 1fr 1fr;
- gap:16px;margin-top:16px
-}
+    .logo span {
+      font-size: 12px;
+      letter-spacing: 5px;
+      display: block;
+      margin-top: 4px;
+    }
 
-canvas{max-width:100%;display:block;margin:auto}
+    .usuario {
+      text-align: right;
+    }
 
-.item{
- padding:12px 0;border-bottom:1px solid var(--borda);
- display:flex;justify-content:space-between;align-items:center
-}
+    .usuario small {
+      display: block;
+      opacity: .8;
+    }
 
-button{
- cursor:pointer
-}
-.btn{
- border:0;border-radius:9px;padding:10px 14px;
- background:#e8efff;color:var(--azul);font-weight:bold
-}
-.btn.azulbtn{background:var(--azul);color:#fff}
-.btn.verdebtn{background:var(--verde);color:#fff}
-.btn.vermelhobtn{background:var(--vermelho);color:#fff}
+    .nome-editavel {
+      border: none;
+      background: rgba(255,255,255,.15);
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      padding: 8px 10px;
+      border-radius: 8px;
+      text-align: right;
+      max-width: 220px;
+    }
 
-.pagina{display:none}
-.pagina.active{display:block}
+    .nome-editavel::placeholder {
+      color: #dbeafe;
+    }
 
-form{
- display:grid;grid-template-columns:repeat(4,1fr);
- gap:12px
-}
-input,select{
- width:100%;padding:11px;border:1px solid #d1d5db;
- border-radius:9px;margin-top:5px
-}
-label{font-size:12px;font-weight:bold}
+    /* MENU */
+    .menu {
+      background: white;
+      padding: 15px;
+      border-bottom: 1px solid var(--borda);
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
 
-table{width:100%;border-collapse:collapse}
-th,td{padding:12px;border-bottom:1px solid var(--borda);text-align:left}
+    .menu-item {
+      border: none;
+      background: white;
+      padding: 13px 18px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 16px;
+      color: #334155;
+      transition: .2s;
+    }
 
-.alerta{
- background:#fff3cd;border-left:4px solid #f59e0b;
- padding:12px;margin-bottom:10px;border-radius:8px
-}
-.progresso{height:10px;background:#e5e7eb;border-radius:20px;overflow:hidden}
-.progresso div{height:100%;background:var(--azul)}
+    .menu-item:hover {
+      background: #eff6ff;
+    }
 
-.cofrinho{text-align:center}
-.porquinho{font-size:100px;cursor:pointer}
+    .menu-item.ativo {
+      background: #dbeafe;
+      color: var(--azul);
+      font-weight: bold;
+    }
 
-@media(max-width:900px){
- aside{width:100%;padding:12px}
- .app{display:block}
- nav{display:flex;overflow:auto}
- nav button{white-space:nowrap;width:auto}
- .cards,.grid,form{grid-template-columns:1fr}
- main{padding:16px}
-}
-</style>
+    /* CONTEÚDO */
+    main {
+      max-width: 1200px;
+      margin: auto;
+      padding: 25px;
+    }
+
+    .pagina {
+      display: none;
+    }
+
+    .pagina.ativa {
+      display: block;
+    }
+
+    .titulo {
+      font-size: 30px;
+      margin-bottom: 25px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 25px;
+      margin-bottom: 25px;
+      box-shadow: 0 4px 15px rgba(0,0,0,.05);
+      border: 1px solid var(--borda);
+    }
+
+    .card h2 {
+      margin-top: 0;
+    }
+
+    /* DASHBOARD */
+    .resumo {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .resumo-card {
+      padding: 22px;
+      border-radius: 18px;
+      color: white;
+    }
+
+    .receita {
+      background: var(--verde);
+    }
+
+    .despesa {
+      background: var(--vermelho);
+    }
+
+    .saldo {
+      background: var(--azul);
+    }
+
+    .resumo-card small {
+      display: block;
+      margin-bottom: 10px;
+      opacity: .9;
+    }
+
+    .resumo-card strong {
+      font-size: 27px;
+    }
+
+    /* FORMULÁRIOS */
+    label {
+      display: block;
+      font-weight: bold;
+      margin: 14px 0 7px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      font-size: 16px;
+      outline: none;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--azul);
+      box-shadow: 0 0 0 3px rgba(37,99,235,.12);
+    }
+
+    button {
+      font-family: inherit;
+    }
+
+    .btn {
+      border: none;
+      padding: 14px 20px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+
+    .btn-azul {
+      background: var(--azul);
+      color: white;
+    }
+
+    .btn-verde {
+      background: var(--verde);
+      color: white;
+    }
+
+    .btn-vermelho {
+      background: var(--vermelho);
+      color: white;
+    }
+
+    .btn-cinza {
+      background: #e2e8f0;
+      color: #334155;
+    }
+
+    .linha {
+      display: flex;
+      gap: 10px;
+      align-items: end;
+    }
+
+    .linha > div {
+      flex: 1;
+    }
+
+    .btn-pequeno {
+      padding: 12px 15px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 18px;
+      background: var(--azul);
+      color: white;
+    }
+
+    /* HISTÓRICO */
+    .historico-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px;
+      border-bottom: 1px solid var(--borda);
+      gap: 10px;
+    }
+
+    .historico-item:last-child {
+      border-bottom: none;
+    }
+
+    .categoria-tag {
+      font-size: 13px;
+      background: #eff6ff;
+      color: var(--azul);
+      padding: 5px 10px;
+      border-radius: 20px;
+      display: inline-block;
+      margin-top: 5px;
+    }
+
+    /* COFRINHO */
+    .total-cofrinho {
+      text-align: center;
+      padding: 25px;
+      background: linear-gradient(135deg, var(--verde), #15803d);
+      color: white;
+      border-radius: 18px;
+      margin-bottom: 25px;
+    }
+
+    .total-cofrinho small {
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .total-cofrinho strong {
+      font-size: 35px;
+    }
+
+    .caixinhas {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+    }
+
+    .caixinha {
+      border: 2px solid #bbf7d0;
+      padding: 18px;
+      border-radius: 16px;
+      background: #f0fdf4;
+    }
+
+    .caixinha h3 {
+      margin: 0 0 10px;
+    }
+
+    .caixinha strong {
+      color: var(--verde);
+      font-size: 22px;
+    }
+
+    .acoes-caixinha {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    /* OBSERVAÇÕES */
+    .postits {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .postit {
+      min-height: 200px;
+      padding: 20px;
+      border-radius: 8px;
+      position: relative;
+      box-shadow: 4px 6px 12px rgba(0,0,0,.12);
+    }
+
+    .postit textarea {
+      background: transparent;
+      border: none;
+      resize: none;
+      height: 130px;
+      padding: 0;
+      box-shadow: none;
+    }
+
+    .postit-amarelo {
+      background: #fef08a;
+    }
+
+    .postit-rosa {
+      background: #fbcfe8;
+    }
+
+    .postit-azul {
+      background: #bae6fd;
+    }
+
+    .postit-verde {
+      background: #bbf7d0;
+    }
+
+    .postit-acoes {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .icone-acao {
+      border: none;
+      background: rgba(255,255,255,.6);
+      width: 35px;
+      height: 35px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    /* ORGANIZAR MENU */
+    .organizar-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px;
+      border-bottom: 1px solid var(--borda);
+    }
+
+    .organizar-item button {
+      border: none;
+      padding: 8px 12px;
+      margin-left: 5px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    /* RESPONSIVO CELULAR */
+    @media (max-width: 700px) {
+
+      header {
+        padding: 15px 18px;
+      }
+
+      .logo {
+        font-size: 20px;
+      }
+
+      .usuario {
+        max-width: 140px;
+      }
+
+      .nome-editavel {
+        max-width: 130px;
+        font-size: 14px;
+      }
+
+      /*
+        MENU NA VERTICAL
+      */
+      .menu {
+        display: grid;
+        grid-template-columns: 1fr;
+        padding: 12px 18px;
+        gap: 8px;
+      }
+
+      .menu-item {
+        width: 100%;
+        text-align: left;
+        padding: 15px;
+      }
+
+      main {
+        padding: 15px;
+      }
+
+      .titulo {
+        font-size: 27px;
+      }
+
+      .resumo {
+        grid-template-columns: 1fr;
+      }
+
+      .caixinhas {
+        grid-template-columns: 1fr;
+      }
+
+      .postits {
+        grid-template-columns: 1fr;
+      }
+
+      .linha {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .linha > div {
+        width: 100%;
+      }
+
+      .historico-item {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .card {
+        padding: 20px;
+        border-radius: 18px;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
 <div class="app">
 
-<aside>
- <div class="logo">📈 RAÍZA<small>FINANÇAS</small></div>
+  <header>
+    <div class="logo">
+      📈 RAÍZA
+      <span>FINANÇAS</span>
+    </div>
 
- <nav>
-  <button class="active" onclick="abrir('dashboard',this)">⌂ Dashboard</button>
-  <button onclick="abrir('diario',this)">🗓️ Gastos diários</button>
-  <button onclick="abrir('contas',this)">📅 Contas a pagar</button>
-  <button onclick="abrir('orcamentos',this)">◔ Orçamentos</button>
-  <button onclick="abrir('cofrinho',this)">🐷 Cofrinho</button>
-  <button onclick="abrir('receitas',this)">⬆️ Receitas</button>
-  <button onclick="abrir('despesas',this)">⬇️ Despesas</button>
- </nav>
-</aside>
+    <div class="usuario">
+      <small>Olá, seja bem-vinda(o)!</small>
+      <input
+        id="nomeUsuario"
+        class="nome-editavel"
+        type="text"
+        placeholder="Digite seu nome"
+        onchange="salvarNome()"
+      >
+    </div>
+  </header>
 
-<main>
+  <nav class="menu" id="menu">
+    <button class="menu-item ativo" data-pagina="dashboard">
+      🏠 Dashboard
+    </button>
 
-<section id="dashboard" class="pagina active">
+    <button class="menu-item" data-pagina="gastos">
+      📅 Gastos diários
+    </button>
 
-<div class="topo">
- <div>
-  <h1>Olá, Raíza! 👋</h1>
-  <p>Tenha o controle da sua vida financeira.</p>
- </div>
- <button class="olho" onclick="alternarOlho()" id="olho">👁️</button>
-</div>
+    <button class="menu-item" data-pagina="contas">
+      💳 Contas a pagar
+    </button>
 
-<div class="cards">
+    <button class="menu-item" data-pagina="cofrinho">
+      🐷 Cofrinho
+    </button>
 
- <div class="card">
-  <h3>⬆️ RECEITAS</h3>
-  <div class="valor verde" id="receita">R$ 0,00</div>
- </div>
+    <button class="menu-item" data-pagina="observacoes">
+      📝 Observações
+    </button>
 
- <div class="card">
-  <h3>⬇️ DESPESAS</h3>
-  <div class="valor vermelho" id="despesa">R$ 0,00</div>
- </div>
+    <button class="menu-item" data-pagina="organizar">
+      ⚙️ Organizar ícones
+    </button>
+  </nav>
 
- <div class="card">
-  <h3>💼 SALDO DO MÊS</h3>
-  <div class="valor azul" id="saldo">R$ 0,00</div>
- </div>
+  <main>
 
-</div>
+    <!-- DASHBOARD -->
+    <section id="dashboard" class="pagina ativa">
+      <h1 class="titulo">📊 Dashboard</h1>
 
-<div class="grid">
+      <div class="resumo">
+        <div class="resumo-card receita">
+          <small>💰 Receitas</small>
+          <strong id="totalReceitas">R$ 0,00</strong>
+        </div>
 
- <div class="card">
-  <h2>Para onde está indo meu dinheiro?</h2>
-  <canvas id="grafico" width="400" height="400"></canvas>
- </div>
+        <div class="resumo-card despesa">
+          <small>📉 Gastos</small>
+          <strong id="totalGastos">R$ 0,00</strong>
+        </div>
 
- <div class="card">
-  <h2>Gastos recentes</h2>
-  <div id="recentes"></div>
- </div>
-
- <div class="card">
-  <h2>Próximas contas</h2>
-  <div id="proximas"></div>
- </div>
-
-</div>
-
-</section>
-
-
-<section id="diario" class="pagina">
-<h1>🗓️ Gastos diários</h1>
-
-<div class="card">
-<form onsubmit="adicionarGasto(event)">
-<label>Descrição<input id="gDescricao" required></label>
-<label>Valor<input id="gValor" type="number" step="0.01" required></label>
-<label>Categoria
-<select id="gCategoria">
-<option>Supermercado</option>
-<option>Gasolina</option>
-<option>Alimentação</option>
-<option>Cartão de Crédito</option>
-<option>Moradia</option>
-<option>Saúde</option>
-<option>Outros</option>
-</select>
-</label>
-<label>Data<input id="gData" type="date" required></label>
-<button class="btn azulbtn">Adicionar gasto</button>
-</form>
-</div>
-
-<div class="card" style="margin-top:15px">
-<h2>Histórico</h2>
-<div id="historico"></div>
-</div>
-</section>
+        <div class="resumo-card saldo">
+          <small>💵 Saldo</small>
+          <strong id="saldoTotal">R$ 0,00</strong>
+        </div>
+      </div>
+    </section>
 
 
-<section id="receitas" class="pagina">
-<h1>⬆️ Nova receita</h1>
+    <!-- GASTOS -->
+    <section id="gastos" class="pagina">
+      <h1 class="titulo">📅 Gastos diários</h1>
 
-<div class="card">
-<form onsubmit="adicionarReceita(event)">
-<label>Descrição<input id="rDescricao" required></label>
-<label>Valor<input id="rValor" type="number" step="0.01" required></label>
-<label>Categoria<input id="rCategoria" value="Salário"></label>
-<label>Data<input id="rData" type="date" required></label>
-<button class="btn verdebtn">Adicionar receita</button>
-</form>
-</div>
-</section>
+      <div class="card">
 
+        <label>Descrição</label>
+        <input type="text" id="descricaoGasto" placeholder="Ex.: Compra no supermercado">
 
-<section id="despesas" class="pagina">
-<h1>⬇️ Nova despesa</h1>
+        <label>Valor</label>
+        <input type="number" step="0.01" id="valorGasto" placeholder="R$ 0,00">
 
-<div class="card">
-<form onsubmit="adicionarDespesa(event)">
-<label>Descrição<input id="dDescricao" required></label>
-<label>Valor<input id="dValor" type="number" step="0.01" required></label>
-<label>Categoria<input id="dCategoria" required></label>
-<label>Data<input id="dData" type="date" required></label>
-<button class="btn vermelhobtn">Adicionar despesa</button>
-</form>
-</div>
-</section>
+        <label>Categoria</label>
 
+        <div class="linha">
+          <div>
+            <select id="categoriaGasto"></select>
+          </div>
 
-<section id="contas" class="pagina">
-<h1>📅 Contas a pagar</h1>
+          <button class="btn-pequeno" onclick="adicionarCategoria()" title="Nova categoria">
+            ➕
+          </button>
+        </div>
 
-<div class="card">
-<form onsubmit="adicionarConta(event)">
-<label>Conta<input id="cNome" required></label>
-<label>Valor<input id="cValor" type="number" step="0.01" required></label>
-<label>Vencimento<input id="cData" type="date" required></label>
-<button class="btn azulbtn">Adicionar conta</button>
-</form>
-</div>
+        <label>Data</label>
+        <input type="date" id="dataGasto">
 
-<div class="card" style="margin-top:15px">
-<div id="listaContas"></div>
-</div>
-</section>
+        <button class="btn btn-azul" onclick="adicionarGasto()">
+          Adicionar gasto
+        </button>
+
+      </div>
+
+      <div class="card">
+        <h2>📋 Histórico</h2>
+        <div id="historicoGastos">
+          <p>Nenhum gasto cadastrado.</p>
+        </div>
+      </div>
+    </section>
 
 
-<section id="orcamentos" class="pagina">
-<h1>◔ Limite de gastos</h1>
+    <!-- CONTAS -->
+    <section id="contas" class="pagina">
+      <h1 class="titulo">💳 Contas a pagar</h1>
 
-<div class="card">
-<form onsubmit="adicionarOrcamento(event)">
-<label>Categoria
-<select id="oCategoria">
-<option>Supermercado</option>
-<option>Gasolina</option>
-<option>Alimentação</option>
-<option>Cartão de Crédito</option>
-<option>Outros</option>
-</select>
-</label>
-<label>Teto de gastos (R$)<input id="oValor" type="number" required></label>
-<button class="btn azulbtn">Definir teto</button>
-</form>
-</div>
-
-<div class="card" style="margin-top:15px">
-<div id="alertas"></div>
-<div id="listaOrcamentos"></div>
-</div>
-</section>
+      <div class="card">
+        <p>Em breve você poderá organizar suas contas, vencimentos e pagamentos aqui.</p>
+      </div>
+    </section>
 
 
-<section id="cofrinho" class="pagina">
-<div class="cofrinho">
-<h1>🐷 Cofrinho</h1>
-<p>Valores que você está guardando.</p>
+    <!-- COFRINHO -->
+    <section id="cofrinho" class="pagina">
+      <h1 class="titulo">🐷 Meu Cofrinho</h1>
 
-<div class="porquinho" onclick="abrirCofrinho()">🐷</div>
+      <div class="total-cofrinho">
+        <small>💰 TOTAL GUARDADO</small>
+        <strong id="totalCofrinho">R$ 0,00</strong>
+      </div>
 
-<div id="conteudoCofrinho" style="display:none">
+      <div class="card">
+        <h2>➕ Adicionar local onde o dinheiro está guardado</h2>
 
-<h2 class="verde" id="totalCofrinho">R$ 0,00</h2>
+        <div class="linha">
+          <div>
+            <label>Nome</label>
+            <input id="nomeCaixinha" type="text" placeholder="Ex.: NUBANK">
+          </div>
 
-<div class="card">
-<form onsubmit="guardar(event)">
-<label>Descrição<input id="pDescricao" required></label>
-<label>Valor<input id="pValor" type="number" step="0.01" required></label>
-<button class="btn verdebtn">Guardar dinheiro</button>
-</form>
-</div>
+          <div>
+            <label>Valor</label>
+            <input id="valorCaixinha" type="number" step="0.01" placeholder="R$ 0,00">
+          </div>
+        </div>
 
-<div id="listaCofrinho"></div>
+        <button class="btn btn-verde" onclick="adicionarCaixinha()">
+          ➕ Adicionar caixinha
+        </button>
+      </div>
+
+      <div class="caixinhas" id="listaCaixinhas"></div>
+    </section>
+
+
+    <!-- OBSERVAÇÕES -->
+    <section id="observacoes" class="pagina">
+      <h1 class="titulo">📝 Observações</h1>
+
+      <div class="card">
+        <h2>✨ Seus lembretes</h2>
+        <p>Crie post-its para anotações, comentários e lembretes rápidos.</p>
+
+        <button class="btn btn-azul" onclick="criarPostIt()">
+          ➕ Novo post-it
+        </button>
+      </div>
+
+      <div class="postits" id="listaPostits"></div>
+    </section>
+
+
+    <!-- ORGANIZAR -->
+    <section id="organizar" class="pagina">
+      <h1 class="titulo">⚙️ Organizar ícones</h1>
+
+      <div class="card">
+        <p>
+          Aqui você pode organizar a ordem das opções do seu aplicativo.
+          Use ⬆️ e ⬇️ para alterar a posição.
+        </p>
+
+        <div id="listaOrganizacao"></div>
+      </div>
+    </section>
+
+  </main>
 
 </div>
-</div>
-</section>
 
-</main>
-</div>
 
 <script>
 
-let dados=JSON.parse(localStorage.getItem("raizaFinancas"))||{
- receitas:[],
- despesas:[],
- contas:[],
- orcamentos:{},
- cofrinho:[]
-};
-
-let ocultar=false;
-
-function salvar(){
- localStorage.setItem("raizaFinancas",JSON.stringify(dados));
- atualizar();
-}
-
-function dinheiro(v){
- return new Intl.NumberFormat("pt-BR",{
- style:"currency",
- currency:"BRL"
- }).format(v||0);
-}
-
-function valor(v){
- return ocultar ? "••••••" : dinheiro(v);
-}
-
-function abrir(id,botao){
- document.querySelectorAll(".pagina").forEach(x=>x.classList.remove("active"));
- document.getElementById(id).classList.add("active");
-
- document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));
- botao.classList.add("active");
-}
-
-function alternarOlho(){
- ocultar=!ocultar;
- document.getElementById("olho").textContent=ocultar?"🙈":"👁️";
- atualizar();
-}
-
-function adicionarGasto(e){
- e.preventDefault();
-
- dados.despesas.push({
- descricao:gDescricao.value,
- valor:+gValor.value,
- categoria:gCategoria.value,
- data:gData.value
- });
-
- e.target.reset();
- salvar();
-}
-
-function adicionarReceita(e){
- e.preventDefault();
-
- dados.receitas.push({
- descricao:rDescricao.value,
- valor:+rValor.value,
- categoria:rCategoria.value,
- data:rData.value
- });
-
- e.target.reset();
- salvar();
-}
-
-function adicionarDespesa(e){
- e.preventDefault();
-
- dados.despesas.push({
- descricao:dDescricao.value,
- valor:+dValor.value,
- categoria:dCategoria.value,
- data:dData.value
- });
-
- e.target.reset();
- salvar();
-}
-
-function adicionarConta(e){
- e.preventDefault();
-
- dados.contas.push({
- nome:cNome.value,
- valor:+cValor.value,
- data:cData.value,
- status:"Pendente"
- });
-
- e.target.reset();
- salvar();
-}
-
-function mudarConta(i){
- dados.contas[i].status=
- dados.contas[i].status==="Pendente"?"Feito":"Pendente";
-
- salvar();
-}
-
-function adicionarOrcamento(e){
- e.preventDefault();
-
- dados.orcamentos[oCategoria.value]=+oValor.value;
-
- e.target.reset();
- salvar();
-}
-
-function guardar(e){
- e.preventDefault();
-
- dados.cofrinho.push({
- descricao:pDescricao.value,
- valor:+pValor.value
- });
-
- e.target.reset();
- salvar();
-}
-
-function abrirCofrinho(){
- let x=document.getElementById("conteudoCofrinho");
- x.style.display=x.style.display==="none"?"block":"none";
-}
-
-function atualizar(){
-
- let receitas=dados.receitas.reduce((a,b)=>a+b.valor,0);
- let despesas=dados.despesas.reduce((a,b)=>a+b.valor,0);
-
- receita.textContent=valor(receitas);
- despesa.textContent=valor(despesas);
- saldo.textContent=valor(receitas-despesas);
-
- recentes.innerHTML=dados.despesas.slice(-5).reverse()
- .map(x=>`
- <div class="item">
- <span>${x.descricao}<br><small>${x.categoria}</small></span>
- <b class="vermelho">-${valor(x.valor)}</b>
- </div>`).join("")||"Nenhum gasto cadastrado.";
-
- proximas.innerHTML=dados.contas.slice(-5)
- .map(x=>`
- <div class="item">
- <span>${x.nome}</span>
- <b class="vermelho">${valor(x.valor)}</b>
- </div>`).join("")||"Nenhuma conta cadastrada.";
-
- historico.innerHTML=dados.despesas.slice().reverse()
- .map(x=>`
- <div class="item">
- <span>${x.descricao} · ${x.categoria}</span>
- <b class="vermelho">-${valor(x.valor)}</b>
- </div>`).join("");
-
- listaContas.innerHTML=dados.contas.map((x,i)=>`
- <div class="item">
- <span>
- <b>${x.nome}</b><br>
- <small>${x.data} · ${x.status}</small>
- </span>
- <span class="vermelho">${valor(x.valor)}</span>
- <button class="btn" onclick="mudarConta(${i})">
- ${x.status==="Pendente"?"⏳ Pendente":"✅ Feito"}
- </button>
- </div>`).join("");
-
- let gastos={};
-
- dados.despesas.forEach(x=>{
- gastos[x.categoria]=(gastos[x.categoria]||0)+x.valor;
- });
-
- listaOrcamentos.innerHTML="";
- alertas.innerHTML="";
-
- Object.entries(dados.orcamentos).forEach(([cat,teto])=>{
-
- let gasto=gastos[cat]||0;
- let porcentagem=gasto/teto*100;
-
- if(porcentagem>=100){
- alertas.innerHTML+=`
- <div class="alerta">
- 🔴 Você ultrapassou o limite de <b>${cat}</b>!
- </div>`;
- }
-
- listaOrcamentos.innerHTML+=`
- <div class="item">
- <span><b>${cat}</b><br>
- Teto: ${valor(teto)} · Gasto: ${valor(gasto)}
- </span>
- <span>${Math.round(porcentagem)}%</span>
- </div>
- <div class="progresso">
- <div style="width:${Math.min(porcentagem,100)}%"></div>
- </div>`;
- });
-
- let totalC=dados.cofrinho.reduce((a,b)=>a+b.valor,0);
-
- totalCofrinho.textContent=valor(totalC);
-
- listaCofrinho.innerHTML=dados.cofrinho.map(x=>`
- <div class="item">
- <span>${x.descricao}</span>
- <b class="verde">${valor(x.valor)}</b>
- </div>`).join("");
-
- desenharGrafico(gastos);
-}
-
-function desenharGrafico(gastos){
-
- let canvas=document.getElementById("grafico");
- let ctx=canvas.getContext("2d");
-
- ctx.clearRect(0,0,400,400);
-
- let itens=Object.entries(gastos);
- let total=itens.reduce((a,b)=>a+b[1],0);
-
- if(!total){
- ctx.font="18px Arial";
- ctx.fillStyle="#64748b";
- ctx.textAlign="center";
- ctx.fillText("Adicione despesas para ver o gráfico",200,200);
- return;
- }
-
- let cores=[
- "#2563eb","#16a34a","#dc2626",
- "#f59e0b","#7c3aed","#0891b2","#db2777"
- ];
-
- let inicio=-Math.PI/2;
-
- itens.forEach((item,i)=>{
-
- let parte=item[1]/total*Math.PI*2;
-
- ctx.beginPath();
- ctx.moveTo(200,200);
- ctx.arc(200,200,140,inicio,inicio+parte);
- ctx.closePath();
-
- ctx.fillStyle=cores[i%cores.length];
- ctx.fill();
-
- let meio=inicio+parte/2;
-
- if(parte>0.35){
- ctx.fillStyle="#fff";
- ctx.font="bold 12px Arial";
- ctx.textAlign="center";
-
- ctx.fillText(
- item[0],
- 200+Math.cos(meio)*90,
- 200+Math.sin(meio)*90
- );
- }
-
- inicio+=parte;
- });
-
- ctx.beginPath();
- ctx.arc(200,200,60,0,Math.PI*2);
- ctx.fillStyle="#fff";
- ctx.fill();
-
- ctx.fillStyle="#1f2937";
- ctx.font="12px Arial";
- ctx.textAlign="center";
- ctx.fillText("Total gasto",200,195);
-
- ctx.font="bold 15px Arial";
- ctx.fillText(ocultar?"••••••":dinheiro(total),200,215);
-}
-
-let hoje=new Date().toISOString().split("T")[0];
-
-document.querySelectorAll('input[type="date"]').forEach(x=>{
- x.value=hoje;
-});
-
-atualizar();
+  /*
+    ============================
+    DADOS
+    ============================
+  */
+
+  let categorias = JSON.parse(localStorage.getItem("categorias")) || [
+    "Supermercado",
+    "Alimentação",
+    "Transporte",
+    "Combustível",
+    "Farmácia",
+    "Lazer",
+    "Casa",
+    "Outros"
+  ];
+
+  let gastos = JSON.parse(localStorage.getItem("gastos")) || [];
+
+  let caixinhas = JSON.parse(localStorage.getItem("caixinhas")) || [];
+
+  let postits = JSON.parse(localStorage.getItem("postits")) || [];
+
+  let ordemMenu = JSON.parse(localStorage.getItem("ordemMenu")) || [
+    "dashboard",
+    "gastos",
+    "contas",
+    "cofrinho",
+    "observacoes",
+    "organizar"
+  ];
+
+
+  /*
+    ============================
+    MENU
+    ============================
+  */
+
+  document.querySelectorAll(".menu-item").forEach(botao => {
+
+    botao.addEventListener("click", function() {
+
+      const pagina = this.dataset.pagina;
+
+      document.querySelectorAll(".pagina").forEach(p => {
+        p.classList.remove("ativa");
+      });
+
+      document.querySelectorAll(".menu-item").forEach(b => {
+        b.classList.remove("ativo");
+      });
+
+      document.getElementById(pagina).classList.add("ativa");
+
+      this.classList.add("ativo");
+
+    });
+
+  });
+
+
+  /*
+    ============================
+    NOME DO USUÁRIO
+    ============================
+  */
+
+  function salvarNome() {
+
+    const nome = document.getElementById("nomeUsuario").value;
+
+    localStorage.setItem("nomeUsuario", nome);
+
+  }
+
+  function carregarNome() {
+
+    const nome = localStorage.getItem("nomeUsuario") || "";
+
+    document.getElementById("nomeUsuario").value = nome;
+
+  }
+
+
+  /*
+    ============================
+    CATEGORIAS
+    ============================
+  */
+
+  function atualizarCategorias() {
+
+    const select = document.getElementById("categoriaGasto");
+
+    select.innerHTML = "";
+
+    categorias.forEach(categoria => {
+
+      const option = document.createElement("option");
+
+      option.value = categoria;
+
+      option.textContent = categoria;
+
+      select.appendChild(option);
+
+    });
+
+  }
+
+  function adicionarCategoria() {
+
+    const novaCategoria = prompt("Digite o nome da nova categoria:");
+
+    if (!novaCategoria) return;
+
+    const categoria = novaCategoria.trim();
+
+    if (!categoria) return;
+
+    if (categorias.includes(categoria)) {
+      alert("Essa categoria já existe!");
+      return;
+    }
+
+    categorias.push(categoria);
+
+    localStorage.setItem(
+      "categorias",
+      JSON.stringify(categorias)
+    );
+
+    atualizarCategorias();
+
+    document.getElementById("categoriaGasto").value = categoria;
+
+  }
+
+
+  /*
+    ============================
+    GASTOS
+    ============================
+  */
+
+  function adicionarGasto() {
+
+    const descricao =
+      document.getElementById("descricaoGasto").value.trim();
+
+    const valor =
+      parseFloat(document.getElementById("valorGasto").value);
+
+    const categoria =
+      document.getElementById("categoriaGasto").value;
+
+    const data =
+      document.getElementById("dataGasto").value;
+
+    if (!descricao || !valor || !data) {
+
+      alert("Preencha todos os campos!");
+
+      return;
+    }
+
+    gastos.push({
+      id: Date.now(),
+      descricao,
+      valor,
+      categoria,
+      data
+    });
+
+    localStorage.setItem(
+      "gastos",
+      JSON.stringify(gastos)
+    );
+
+    document.getElementById("descricaoGasto").value = "";
+
+    document.getElementById("valorGasto").value = "";
+
+    atualizarHistorico();
+
+    atualizarDashboard();
+
+  }
+
+  function atualizarHistorico() {
+
+    const historico =
+      document.getElementById("historicoGastos");
+
+    if (gastos.length === 0) {
+
+      historico.innerHTML =
+        "<p>Nenhum gasto cadastrado.</p>";
+
+      return;
+    }
+
+    historico.innerHTML = "";
+
+    gastos
+      .slice()
+      .reverse()
+      .forEach(gasto => {
+
+        const item =
+          document.createElement("div");
+
+        item.className = "historico-item";
+
+        item.innerHTML = `
+          <div>
+            <strong>${gasto.descricao}</strong>
+
+            <div class="categoria-tag">
+              ${gasto.categoria}
+            </div>
+
+            <div style="margin-top:5px;color:#64748b;font-size:13px;">
+              ${formatarData(gasto.data)}
+            </div>
+          </div>
+
+          <div style="text-align:right;">
+            <strong style="color:#dc2626;">
+              ${formatarMoeda(gasto.valor)}
+            </strong>
+
+            <br>
+
+            <button
+              class="btn btn-vermelho"
+              style="padding:7px 10px;margin-top:8px;font-size:12px;"
+              onclick="excluirGasto(${gasto.id})"
+            >
+              🗑️
+            </button>
+          </div>
+        `;
+
+        historico.appendChild(item);
+
+      });
+
+  }
+
+  function excluirGasto(id) {
+
+    gastos = gastos.filter(g => g.id !== id);
+
+    localStorage.setItem(
+      "gastos",
+      JSON.stringify(gastos)
+    );
+
+    atualizarHistorico();
+
+    atualizarDashboard();
+
+  }
+
+
+  /*
+    ============================
+    DASHBOARD
+    ============================
+  */
+
+  function atualizarDashboard() {
+
+    const totalGastos =
+      gastos.reduce((total, gasto) => {
+
+        return total + Number(gasto.valor);
+
+      }, 0);
+
+    document.getElementById("totalGastos").textContent =
+      formatarMoeda(totalGastos);
+
+    document.getElementById("totalReceitas").textContent =
+      formatarMoeda(0);
+
+    document.getElementById("saldoTotal").textContent =
+      formatarMoeda(-totalGastos);
+
+  }
+
+
+  /*
+    ============================
+    COFRINHO
+    ============================
+  */
+
+  function adicionarCaixinha() {
+
+    const nome =
+      document.getElementById("nomeCaixinha").value.trim();
+
+    const valor =
+      parseFloat(
+        document.getElementById("valorCaixinha").value
+      );
+
+    if (!nome || isNaN(valor)) {
+
+      alert("Preencha o nome e o valor!");
+
+      return;
+    }
+
+    caixinhas.push({
+      id: Date.now(),
+      nome,
+      valor
+    });
+
+    localStorage.setItem(
+      "caixinhas",
+      JSON.stringify(caixinhas)
+    );
+
+    document.getElementById("nomeCaixinha").value = "";
+
+    document.getElementById("valorCaixinha").value = "";
+
+    atualizarCaixinhas();
+
+  }
+
+  function atualizarCaixinhas() {
+
+    const lista =
+      document.getElementById("listaCaixinhas");
+
+    lista.innerHTML = "";
+
+    let total = 0;
+
+    caixinhas.forEach(caixinha => {
+
+      total += Number(caixinha.valor);
+
+      const div =
+        document.createElement("div");
+
+      div.className = "caixinha";
+
+      div.innerHTML = `
+        <h3>💰 ${caixinha.nome}</h3>
+
+        <strong>
+          ${formatarMoeda(caixinha.valor)}
+        </strong>
+
+        <div class="acoes-caixinha">
+
+          <button
+            class="btn btn-cinza"
+            style="margin:0;padding:8px 10px;"
+            onclick="editarCaixinha(${caixinha.id})"
+          >
+            ✏️
+          </button>
+
+          <button
+            class="btn btn-vermelho"
+            style="margin:0;padding:8px 10px;"
+            onclick="excluirCaixinha(${caixinha.id})"
+          >
+            🗑️
+          </button>
+
+        </div>
+      `;
+
+      lista.appendChild(div);
+
+    });
+
+    document.getElementById("totalCofrinho").textContent =
+      formatarMoeda(total);
+
+  }
+
+  function editarCaixinha(id) {
+
+    const caixinha =
+      caixinhas.find(c => c.id === id);
+
+    const novoNome =
+      prompt("Nome:", caixinha.nome);
+
+    if (!novoNome) return;
+
+    const novoValor =
+      prompt("Valor:", caixinha.valor);
+
+    if (novoValor === null) return;
+
+    caixinha.nome = novoNome;
+
+    caixinha.valor = Number(novoValor);
+
+    localStorage.setItem(
+      "caixinhas",
+      JSON.stringify(caixinhas)
+    );
+
+    atualizarCaixinhas();
+
+  }
+
+  function excluirCaixinha(id) {
+
+    if (!confirm("Deseja excluir esta caixinha?")) return;
+
+    caixinhas =
+      caixinhas.filter(c => c.id !== id);
+
+    localStorage.setItem(
+      "caixinhas",
+      JSON.stringify(caixinhas)
+    );
+
+    atualizarCaixinhas();
+
+  }
+
+
+  /*
+    ============================
+    POST-ITS
+    ============================
+  */
+
+  function criarPostIt() {
+
+    postits.push({
+      id: Date.now(),
+      texto: "",
+      cor: "postit-amarelo"
+    });
+
+    localStorage.setItem(
+      "postits",
+      JSON.stringify(postits)
+    );
+
+    atualizarPostits();
+
+  }
+
+  function atualizarPostits() {
+
+    const lista =
+      document.getElementById("listaPostits");
+
+    lista.innerHTML = "";
+
+    postits.forEach(postit => {
+
+      const div =
+        document.createElement("div");
+
+      div.className =
+        `postit ${postit.cor}`;
+
+      div.innerHTML = `
+
+        <textarea
+          placeholder="Escreva sua observação..."
+          oninput="salvarTextoPostit(${postit.id}, this.value)"
+        >${postit.texto}</textarea>
+
+        <div class="postit-acoes">
+
+          <button
+            class="icone-acao"
+            onclick="mudarCorPostit(${postit.id})"
+            title="Mudar cor"
+          >
+            🎨
+          </button>
+
+          <button
+            class="icone-acao"
+            onclick="excluirPostit(${postit.id})"
+            title="Apagar"
+          >
+            🗑️
+          </button>
+
+        </div>
+
+      `;
+
+      lista.appendChild(div);
+
+    });
+
+  }
+
+  function salvarTextoPostit(id, texto) {
+
+    const postit =
+      postits.find(p => p.id === id);
+
+    postit.texto = texto;
+
+    localStorage.setItem(
+      "postits",
+      JSON.stringify(postits)
+    );
+
+  }
+
+  function mudarCorPostit(id) {
+
+    const cores = [
+      "postit-amarelo",
+      "postit-rosa",
+      "postit-azul",
+      "postit-verde"
+    ];
+
+    const postit =
+      postits.find(p => p.id === id);
+
+    let indice =
+      cores.indexOf(postit.cor);
+
+    indice++;
+
+    if (indice >= cores.length) {
+      indice = 0;
+    }
+
+    postit.cor = cores[indice];
+
+    localStorage.setItem(
+      "postits",
+      JSON.stringify(postits)
+    );
+
+    atualizarPostits();
+
+  }
+
+  function excluirPostit(id) {
+
+    if (!confirm("Deseja apagar este post-it?")) return;
+
+    postits =
+      postits.filter(p => p.id !== id);
+
+    localStorage.setItem(
+      "postits",
+      JSON.stringify(postits)
+    );
+
+    atualizarPostits();
+
+  }
+
+
+  /*
+    ============================
+    ORGANIZAR ÍCONES
+    ============================
+  */
+
+  function nomesPaginas(id) {
+
+    const nomes = {
+      dashboard: "🏠 Dashboard",
+      gastos: "📅 Gastos diários",
+      contas: "💳 Contas a pagar",
+      cofrinho: "🐷 Cofrinho",
+      observacoes: "📝 Observações",
+      organizar: "⚙️ Organizar ícones"
+    };
+
+    return nomes[id];
+
+  }
+
+  function atualizarOrganizacao() {
+
+    const lista =
+      document.getElementById("listaOrganizacao");
+
+    lista.innerHTML = "";
+
+    ordemMenu.forEach((id, index) => {
+
+      const div =
+        document.createElement("div");
+
+      div.className =
+        "organizar-item";
+
+      div.innerHTML = `
+
+        <strong>
+          ${nomesPaginas(id)}
+        </strong>
+
+        <div>
+
+          <button
+            onclick="moverMenu(${index}, -1)"
+            ${index === 0 ? "disabled" : ""}
+          >
+            ⬆️
+          </button>
+
+          <button
+            onclick="moverMenu(${index}, 1)"
+            ${index === ordemMenu.length - 1 ? "disabled" : ""}
+          >
+            ⬇️
+          </button>
+
+        </div>
+
+      `;
+
+      lista.appendChild(div);
+
+    });
+
+  }
+
+  function moverMenu(index, direcao) {
+
+    const novoIndex =
+      index + direcao;
+
+    if (
+      novoIndex < 0 ||
+      novoIndex >= ordemMenu.length
+    ) return;
+
+    const temporario =
+      ordemMenu[index];
+
+    ordemMenu[index] =
+      ordemMenu[novoIndex];
+
+    ordemMenu[novoIndex] =
+      temporario;
+
+    localStorage.setItem(
+      "ordemMenu",
+      JSON.stringify(ordemMenu)
+    );
+
+    atualizarMenuVisual();
+
+    atualizarOrganizacao();
+
+  }
+
+  function atualizarMenuVisual() {
+
+    const menu =
+      document.getElementById("menu");
+
+    ordemMenu.forEach(id => {
+
+      const botao =
+        menu.querySelector(
+          `[data-pagina="${id}"]`
+        );
+
+      menu.appendChild(botao);
+
+    });
+
+  }
+
+
+  /*
+    ============================
+    FUNÇÕES AUXILIARES
+    ============================
+  */
+
+  function formatarMoeda(valor) {
+
+    return Number(valor).toLocaleString(
+      "pt-BR",
+      {
+        style: "currency",
+        currency: "BRL"
+      }
+    );
+
+  }
+
+  function formatarData(data) {
+
+    if (!data) return "";
+
+    const partes = data.split("-");
+
+    return `${partes[2]}/${partes[1]}/${partes[0]}`;
+
+  }
+
+
+  /*
+    ============================
+    INICIALIZAÇÃO
+    ============================
+  */
+
+  document.getElementById("dataGasto").value =
+    new Date().toISOString().split("T")[0];
+
+  carregarNome();
+
+  atualizarCategorias();
+
+  atualizarHistorico();
+
+  atualizarDashboard();
+
+  atualizarCaixinhas();
+
+  atualizarPostits();
+
+  atualizarMenuVisual();
+
+  atualizarOrganizacao();
 
 </script>
 
