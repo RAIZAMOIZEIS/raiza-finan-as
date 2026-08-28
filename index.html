@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#2563eb">
+<title>RAÍZA FINANÇAS</title>
+
+<style>
+:root{
+ --azul:#2563eb;--verde:#16a34a;--vermelho:#dc2626;
+ --cinza:#f1f3f6;--texto:#1f2937;--borda:#e5e7eb;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:var(--cinza);color:var(--texto)}
+.app{display:flex;min-height:100vh}
+
+aside{
+ width:240px;background:#fff;padding:20px;
+ border-right:1px solid var(--borda)
+}
+.logo{font-size:22px;font-weight:bold;color:var(--azul);margin-bottom:25px}
+.logo small{display:block;font-size:10px;letter-spacing:4px;color:#64748b}
+
+nav button{
+ width:100%;border:0;background:transparent;padding:13px;
+ text-align:left;border-radius:10px;margin:3px 0;
+ cursor:pointer;font-size:14px
+}
+nav button:hover,nav button.active{
+ background:#e8efff;color:var(--azul);font-weight:bold
+}
+
+main{flex:1;padding:28px;max-width:1500px;margin:auto}
+.topo{display:flex;justify-content:space-between;align-items:center}
+.topo h1{margin:0;font-size:26px}
+.topo p{color:#64748b}
+
+.olho{
+ border:0;background:#fff;border-radius:10px;
+ padding:10px;font-size:20px;cursor:pointer
+}
+
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px}
+.card{
+ background:#fff;border-radius:16px;padding:20px;
+ border:1px solid var(--borda)
+}
+.card h3{font-size:14px;margin:0 0 10px;color:#64748b}
+.valor{font-size:28px;font-weight:bold}
+.verde{color:var(--verde)}
+.vermelho{color:var(--vermelho)}
+.azul{color:var(--azul)}
+
+.grid{
+ display:grid;grid-template-columns:1.3fr 1fr 1fr;
+ gap:16px;margin-top:16px
+}
+
+canvas{max-width:100%;display:block;margin:auto}
+
+.item{
+ padding:12px 0;border-bottom:1px solid var(--borda);
+ display:flex;justify-content:space-between;align-items:center
+}
+
+button{
+ cursor:pointer
+}
+.btn{
+ border:0;border-radius:9px;padding:10px 14px;
+ background:#e8efff;color:var(--azul);font-weight:bold
+}
+.btn.azulbtn{background:var(--azul);color:#fff}
+.btn.verdebtn{background:var(--verde);color:#fff}
+.btn.vermelhobtn{background:var(--vermelho);color:#fff}
+
+.pagina{display:none}
+.pagina.active{display:block}
+
+form{
+ display:grid;grid-template-columns:repeat(4,1fr);
+ gap:12px
+}
+input,select{
+ width:100%;padding:11px;border:1px solid #d1d5db;
+ border-radius:9px;margin-top:5px
+}
+label{font-size:12px;font-weight:bold}
+
+table{width:100%;border-collapse:collapse}
+th,td{padding:12px;border-bottom:1px solid var(--borda);text-align:left}
+
+.alerta{
+ background:#fff3cd;border-left:4px solid #f59e0b;
+ padding:12px;margin-bottom:10px;border-radius:8px
+}
+.progresso{height:10px;background:#e5e7eb;border-radius:20px;overflow:hidden}
+.progresso div{height:100%;background:var(--azul)}
+
+.cofrinho{text-align:center}
+.porquinho{font-size:100px;cursor:pointer}
+
+@media(max-width:900px){
+ aside{width:100%;padding:12px}
+ .app{display:block}
+ nav{display:flex;overflow:auto}
+ nav button{white-space:nowrap;width:auto}
+ .cards,.grid,form{grid-template-columns:1fr}
+ main{padding:16px}
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<aside>
+ <div class="logo">📈 RAÍZA<small>FINANÇAS</small></div>
+
+ <nav>
+  <button class="active" onclick="abrir('dashboard',this)">⌂ Dashboard</button>
+  <button onclick="abrir('diario',this)">🗓️ Gastos diários</button>
+  <button onclick="abrir('contas',this)">📅 Contas a pagar</button>
+  <button onclick="abrir('orcamentos',this)">◔ Orçamentos</button>
+  <button onclick="abrir('cofrinho',this)">🐷 Cofrinho</button>
+  <button onclick="abrir('receitas',this)">⬆️ Receitas</button>
+  <button onclick="abrir('despesas',this)">⬇️ Despesas</button>
+ </nav>
+</aside>
+
+<main>
+
+<section id="dashboard" class="pagina active">
+
+<div class="topo">
+ <div>
+  <h1>Olá, Raíza! 👋</h1>
+  <p>Tenha o controle da sua vida financeira.</p>
+ </div>
+ <button class="olho" onclick="alternarOlho()" id="olho">👁️</button>
+</div>
+
+<div class="cards">
+
+ <div class="card">
+  <h3>⬆️ RECEITAS</h3>
+  <div class="valor verde" id="receita">R$ 0,00</div>
+ </div>
+
+ <div class="card">
+  <h3>⬇️ DESPESAS</h3>
+  <div class="valor vermelho" id="despesa">R$ 0,00</div>
+ </div>
+
+ <div class="card">
+  <h3>💼 SALDO DO MÊS</h3>
+  <div class="valor azul" id="saldo">R$ 0,00</div>
+ </div>
+
+</div>
+
+<div class="grid">
+
+ <div class="card">
+  <h2>Para onde está indo meu dinheiro?</h2>
+  <canvas id="grafico" width="400" height="400"></canvas>
+ </div>
+
+ <div class="card">
+  <h2>Gastos recentes</h2>
+  <div id="recentes"></div>
+ </div>
+
+ <div class="card">
+  <h2>Próximas contas</h2>
+  <div id="proximas"></div>
+ </div>
+
+</div>
+
+</section>
+
+
+<section id="diario" class="pagina">
+<h1>🗓️ Gastos diários</h1>
+
+<div class="card">
+<form onsubmit="adicionarGasto(event)">
+<label>Descrição<input id="gDescricao" required></label>
+<label>Valor<input id="gValor" type="number" step="0.01" required></label>
+<label>Categoria
+<select id="gCategoria">
+<option>Supermercado</option>
+<option>Gasolina</option>
+<option>Alimentação</option>
+<option>Cartão de Crédito</option>
+<option>Moradia</option>
+<option>Saúde</option>
+<option>Outros</option>
+</select>
+</label>
+<label>Data<input id="gData" type="date" required></label>
+<button class="btn azulbtn">Adicionar gasto</button>
+</form>
+</div>
+
+<div class="card" style="margin-top:15px">
+<h2>Histórico</h2>
+<div id="historico"></div>
+</div>
+</section>
+
+
+<section id="receitas" class="pagina">
+<h1>⬆️ Nova receita</h1>
+
+<div class="card">
+<form onsubmit="adicionarReceita(event)">
+<label>Descrição<input id="rDescricao" required></label>
+<label>Valor<input id="rValor" type="number" step="0.01" required></label>
+<label>Categoria<input id="rCategoria" value="Salário"></label>
+<label>Data<input id="rData" type="date" required></label>
+<button class="btn verdebtn">Adicionar receita</button>
+</form>
+</div>
+</section>
+
+
+<section id="despesas" class="pagina">
+<h1>⬇️ Nova despesa</h1>
+
+<div class="card">
+<form onsubmit="adicionarDespesa(event)">
+<label>Descrição<input id="dDescricao" required></label>
+<label>Valor<input id="dValor" type="number" step="0.01" required></label>
+<label>Categoria<input id="dCategoria" required></label>
+<label>Data<input id="dData" type="date" required></label>
+<button class="btn vermelhobtn">Adicionar despesa</button>
+</form>
+</div>
+</section>
+
+
+<section id="contas" class="pagina">
+<h1>📅 Contas a pagar</h1>
+
+<div class="card">
+<form onsubmit="adicionarConta(event)">
+<label>Conta<input id="cNome" required></label>
+<label>Valor<input id="cValor" type="number" step="0.01" required></label>
+<label>Vencimento<input id="cData" type="date" required></label>
+<button class="btn azulbtn">Adicionar conta</button>
+</form>
+</div>
+
+<div class="card" style="margin-top:15px">
+<div id="listaContas"></div>
+</div>
+</section>
+
+
+<section id="orcamentos" class="pagina">
+<h1>◔ Limite de gastos</h1>
+
+<div class="card">
+<form onsubmit="adicionarOrcamento(event)">
+<label>Categoria
+<select id="oCategoria">
+<option>Supermercado</option>
+<option>Gasolina</option>
+<option>Alimentação</option>
+<option>Cartão de Crédito</option>
+<option>Outros</option>
+</select>
+</label>
+<label>Teto de gastos (R$)<input id="oValor" type="number" required></label>
+<button class="btn azulbtn">Definir teto</button>
+</form>
+</div>
+
+<div class="card" style="margin-top:15px">
+<div id="alertas"></div>
+<div id="listaOrcamentos"></div>
+</div>
+</section>
+
+
+<section id="cofrinho" class="pagina">
+<div class="cofrinho">
+<h1>🐷 Cofrinho</h1>
+<p>Valores que você está guardando.</p>
+
+<div class="porquinho" onclick="abrirCofrinho()">🐷</div>
+
+<div id="conteudoCofrinho" style="display:none">
+
+<h2 class="verde" id="totalCofrinho">R$ 0,00</h2>
+
+<div class="card">
+<form onsubmit="guardar(event)">
+<label>Descrição<input id="pDescricao" required></label>
+<label>Valor<input id="pValor" type="number" step="0.01" required></label>
+<button class="btn verdebtn">Guardar dinheiro</button>
+</form>
+</div>
+
+<div id="listaCofrinho"></div>
+
+</div>
+</div>
+</section>
+
+</main>
+</div>
+
+<script>
+
+let dados=JSON.parse(localStorage.getItem("raizaFinancas"))||{
+ receitas:[],
+ despesas:[],
+ contas:[],
+ orcamentos:{},
+ cofrinho:[]
+};
+
+let ocultar=false;
+
+function salvar(){
+ localStorage.setItem("raizaFinancas",JSON.stringify(dados));
+ atualizar();
+}
+
+function dinheiro(v){
+ return new Intl.NumberFormat("pt-BR",{
+ style:"currency",
+ currency:"BRL"
+ }).format(v||0);
+}
+
+function valor(v){
+ return ocultar ? "••••••" : dinheiro(v);
+}
+
+function abrir(id,botao){
+ document.querySelectorAll(".pagina").forEach(x=>x.classList.remove("active"));
+ document.getElementById(id).classList.add("active");
+
+ document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));
+ botao.classList.add("active");
+}
+
+function alternarOlho(){
+ ocultar=!ocultar;
+ document.getElementById("olho").textContent=ocultar?"🙈":"👁️";
+ atualizar();
+}
+
+function adicionarGasto(e){
+ e.preventDefault();
+
+ dados.despesas.push({
+ descricao:gDescricao.value,
+ valor:+gValor.value,
+ categoria:gCategoria.value,
+ data:gData.value
+ });
+
+ e.target.reset();
+ salvar();
+}
+
+function adicionarReceita(e){
+ e.preventDefault();
+
+ dados.receitas.push({
+ descricao:rDescricao.value,
+ valor:+rValor.value,
+ categoria:rCategoria.value,
+ data:rData.value
+ });
+
+ e.target.reset();
+ salvar();
+}
+
+function adicionarDespesa(e){
+ e.preventDefault();
+
+ dados.despesas.push({
+ descricao:dDescricao.value,
+ valor:+dValor.value,
+ categoria:dCategoria.value,
+ data:dData.value
+ });
+
+ e.target.reset();
+ salvar();
+}
+
+function adicionarConta(e){
+ e.preventDefault();
+
+ dados.contas.push({
+ nome:cNome.value,
+ valor:+cValor.value,
+ data:cData.value,
+ status:"Pendente"
+ });
+
+ e.target.reset();
+ salvar();
+}
+
+function mudarConta(i){
+ dados.contas[i].status=
+ dados.contas[i].status==="Pendente"?"Feito":"Pendente";
+
+ salvar();
+}
+
+function adicionarOrcamento(e){
+ e.preventDefault();
+
+ dados.orcamentos[oCategoria.value]=+oValor.value;
+
+ e.target.reset();
+ salvar();
+}
+
+function guardar(e){
+ e.preventDefault();
+
+ dados.cofrinho.push({
+ descricao:pDescricao.value,
+ valor:+pValor.value
+ });
+
+ e.target.reset();
+ salvar();
+}
+
+function abrirCofrinho(){
+ let x=document.getElementById("conteudoCofrinho");
+ x.style.display=x.style.display==="none"?"block":"none";
+}
+
+function atualizar(){
+
+ let receitas=dados.receitas.reduce((a,b)=>a+b.valor,0);
+ let despesas=dados.despesas.reduce((a,b)=>a+b.valor,0);
+
+ receita.textContent=valor(receitas);
+ despesa.textContent=valor(despesas);
+ saldo.textContent=valor(receitas-despesas);
+
+ recentes.innerHTML=dados.despesas.slice(-5).reverse()
+ .map(x=>`
+ <div class="item">
+ <span>${x.descricao}<br><small>${x.categoria}</small></span>
+ <b class="vermelho">-${valor(x.valor)}</b>
+ </div>`).join("")||"Nenhum gasto cadastrado.";
+
+ proximas.innerHTML=dados.contas.slice(-5)
+ .map(x=>`
+ <div class="item">
+ <span>${x.nome}</span>
+ <b class="vermelho">${valor(x.valor)}</b>
+ </div>`).join("")||"Nenhuma conta cadastrada.";
+
+ historico.innerHTML=dados.despesas.slice().reverse()
+ .map(x=>`
+ <div class="item">
+ <span>${x.descricao} · ${x.categoria}</span>
+ <b class="vermelho">-${valor(x.valor)}</b>
+ </div>`).join("");
+
+ listaContas.innerHTML=dados.contas.map((x,i)=>`
+ <div class="item">
+ <span>
+ <b>${x.nome}</b><br>
+ <small>${x.data} · ${x.status}</small>
+ </span>
+ <span class="vermelho">${valor(x.valor)}</span>
+ <button class="btn" onclick="mudarConta(${i})">
+ ${x.status==="Pendente"?"⏳ Pendente":"✅ Feito"}
+ </button>
+ </div>`).join("");
+
+ let gastos={};
+
+ dados.despesas.forEach(x=>{
+ gastos[x.categoria]=(gastos[x.categoria]||0)+x.valor;
+ });
+
+ listaOrcamentos.innerHTML="";
+ alertas.innerHTML="";
+
+ Object.entries(dados.orcamentos).forEach(([cat,teto])=>{
+
+ let gasto=gastos[cat]||0;
+ let porcentagem=gasto/teto*100;
+
+ if(porcentagem>=100){
+ alertas.innerHTML+=`
+ <div class="alerta">
+ 🔴 Você ultrapassou o limite de <b>${cat}</b>!
+ </div>`;
+ }
+
+ listaOrcamentos.innerHTML+=`
+ <div class="item">
+ <span><b>${cat}</b><br>
+ Teto: ${valor(teto)} · Gasto: ${valor(gasto)}
+ </span>
+ <span>${Math.round(porcentagem)}%</span>
+ </div>
+ <div class="progresso">
+ <div style="width:${Math.min(porcentagem,100)}%"></div>
+ </div>`;
+ });
+
+ let totalC=dados.cofrinho.reduce((a,b)=>a+b.valor,0);
+
+ totalCofrinho.textContent=valor(totalC);
+
+ listaCofrinho.innerHTML=dados.cofrinho.map(x=>`
+ <div class="item">
+ <span>${x.descricao}</span>
+ <b class="verde">${valor(x.valor)}</b>
+ </div>`).join("");
+
+ desenharGrafico(gastos);
+}
+
+function desenharGrafico(gastos){
+
+ let canvas=document.getElementById("grafico");
+ let ctx=canvas.getContext("2d");
+
+ ctx.clearRect(0,0,400,400);
+
+ let itens=Object.entries(gastos);
+ let total=itens.reduce((a,b)=>a+b[1],0);
+
+ if(!total){
+ ctx.font="18px Arial";
+ ctx.fillStyle="#64748b";
+ ctx.textAlign="center";
+ ctx.fillText("Adicione despesas para ver o gráfico",200,200);
+ return;
+ }
+
+ let cores=[
+ "#2563eb","#16a34a","#dc2626",
+ "#f59e0b","#7c3aed","#0891b2","#db2777"
+ ];
+
+ let inicio=-Math.PI/2;
+
+ itens.forEach((item,i)=>{
+
+ let parte=item[1]/total*Math.PI*2;
+
+ ctx.beginPath();
+ ctx.moveTo(200,200);
+ ctx.arc(200,200,140,inicio,inicio+parte);
+ ctx.closePath();
+
+ ctx.fillStyle=cores[i%cores.length];
+ ctx.fill();
+
+ let meio=inicio+parte/2;
+
+ if(parte>0.35){
+ ctx.fillStyle="#fff";
+ ctx.font="bold 12px Arial";
+ ctx.textAlign="center";
+
+ ctx.fillText(
+ item[0],
+ 200+Math.cos(meio)*90,
+ 200+Math.sin(meio)*90
+ );
+ }
+
+ inicio+=parte;
+ });
+
+ ctx.beginPath();
+ ctx.arc(200,200,60,0,Math.PI*2);
+ ctx.fillStyle="#fff";
+ ctx.fill();
+
+ ctx.fillStyle="#1f2937";
+ ctx.font="12px Arial";
+ ctx.textAlign="center";
+ ctx.fillText("Total gasto",200,195);
+
+ ctx.font="bold 15px Arial";
+ ctx.fillText(ocultar?"••••••":dinheiro(total),200,215);
+}
+
+let hoje=new Date().toISOString().split("T")[0];
+
+document.querySelectorAll('input[type="date"]').forEach(x=>{
+ x.value=hoje;
+});
+
+atualizar();
+
+</script>
+
+</body>
+</html>
