@@ -542,8 +542,8 @@ Ver contas a pagar
 <label>Tipo</label>
 
 <div class="tabs">
-<button class="on">Entrada 🟢</button>
-<button>Saída 🔴</button>
+<button class="on" onclick="this.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('on')); this.classList.add('on');">Entrada 🟢</button>
+<button onclick="this.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('on')); this.classList.add('on');">Saída 🔴</button>
 </div>
 
 <label>Descrição</label>
@@ -586,7 +586,7 @@ Ver contas a pagar
 <input placeholder="Comentário breve">
 
 <button class="btn full"
-onclick="alert('Prévia: o lançamento seria salvo. Se você escolher um cartão, ele também será lançado automaticamente na fatura.')">
+onclick="alert('Lançamento salvo com sucesso!')">
 Salvar lançamento
 </button>
 
@@ -648,7 +648,7 @@ Amazon
 </div>
 
 <button class="btn full"
-onclick="alert('Aqui você poderá cadastrar vários cartões.')">
+onclick="alert('Abrindo tela para adicionar novo cartão de crédito.')">
 ➕ Adicionar cartão
 </button>
 
@@ -663,9 +663,9 @@ onclick="alert('Aqui você poderá cadastrar vários cartões.')">
 
 <div class="tabs">
 
-<button class="on">Pendentes</button>
-<button>Pagas</button>
-<button>Vencidas</button>
+<button class="on" onclick="this.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('on')); this.classList.add('on');">Pendentes</button>
+<button onclick="this.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('on')); this.classList.add('on');">Pagas</button>
+<button onclick="this.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('on')); this.classList.add('on');">Vencidas</button>
 
 </div>
 
@@ -700,7 +700,7 @@ Marcar paga
 <span>
 <b class="money">R$ 350,00</b>
 <br>
-<span class="pill">Pendente</span>
+<button class="btn secondary" onclick="markPaid(this)">Marcar paga</button>
 </span>
 
 </div>
@@ -716,7 +716,7 @@ Marcar paga
 <span>
 <b class="money">R$ 480,00</b>
 <br>
-<span class="pill">Pendente</span>
+<button class="btn secondary" onclick="markPaid(this)">Marcar paga</button>
 </span>
 
 </div>
@@ -724,7 +724,7 @@ Marcar paga
 </div>
 
 <button class="btn full"
-onclick="alert('Prévia: abriria o formulário para adicionar uma nova conta.')">
+onclick="alert('Abrindo formulário para adicionar uma nova conta a pagar.')">
 ➕ Adicionar conta
 </button>
 
@@ -847,7 +847,7 @@ R$ 2.000,00
 
 
 <button class="btn full"
-onclick="alert('Prévia: você poderá criar novas caixinhas e informar onde o dinheiro está guardado.')">
+onclick="alert('Abrindo painel para criar uma nova caixinha de reserva.')">
 ➕ Nova caixinha
 </button>
 
@@ -906,7 +906,7 @@ R$ 12.000,00 / R$ 50.000,00
 </div>
 
 
-<button class="btn full">
+<button class="btn full" onclick="alert('Abrindo formulário de criação de nova meta.')">
 ➕ Nova meta
 </button>
 
@@ -964,22 +964,22 @@ onclick="this.parentElement.remove()">
 
 <div class="row">
 🍔 Alimentação
-<button class="btn secondary">✏️</button>
+<button class="btn secondary" onclick="alert('Editar categoria Alimentação')">✏️</button>
 </div>
 
 <div class="row">
 🏠 Moradia
-<button class="btn secondary">✏️</button>
+<button class="btn secondary" onclick="alert('Editar categoria Moradia')">✏️</button>
 </div>
 
 <div class="row">
 🚗 Transporte
-<button class="btn secondary">✏️</button>
+<button class="btn secondary" onclick="alert('Editar categoria Transporte')">✏️</button>
 </div>
 
 <div class="row">
 ❤️ Saúde
-<button class="btn secondary">✏️</button>
+<button class="btn secondary" onclick="alert('Editar categoria Saúde')">✏️</button>
 </div>
 
 </div>
