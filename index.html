@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>RAÍZA FINANÇAS — Controle de Contas do Mês</title>
+<title>RAÍZA FINANÇAS — Contas a Pagar</title>
 <style>
 :root{
   --azul:#173f8a;
@@ -37,7 +37,37 @@ header p{margin:5px 0 0;font-size:14px;opacity:0.9;}
   padding:0 15px;
 }
 
-/* RESUMO DO MÊS */
+/* ABAS DE NAVEGAÇÃO */
+.nav-abas{
+  display:flex;
+  gap:8px;
+  margin-bottom:20px;
+}
+.btn-aba{
+  flex:1;
+  padding:12px;
+  background:#fff;
+  border:1px solid var(--borda);
+  border-radius:10px;
+  font-weight:bold;
+  color:var(--texto);
+  cursor:pointer;
+  text-align:center;
+}
+.btn-aba.active{
+  background:var(--azul);
+  color:#fff;
+  border-color:var(--azul);
+}
+
+.conteudo-aba{
+  display:none;
+}
+.conteudo-aba.active{
+  display:block;
+}
+
+/* RESUMO */
 .resumo{
   display:grid;
   grid-template-columns:repeat(3,1fr);
@@ -69,38 +99,29 @@ header p{margin:5px 0 0;font-size:14px;opacity:0.9;}
 }
 h3{margin-top:0;font-size:18px;color:var(--azul);}
 
-.form-grid{
-  display:grid;
-  grid-template-columns: 2fr 1fr 1fr auto;
-  gap:10px;
-  align-items:end;
-}
-@media(max-width:600px){
-  .form-grid{grid-template-columns:1fr;}
-}
-
-label{font-size:12px;font-weight:bold;display:block;margin-bottom:4px;color:#475569;}
+label{font-size:12px;font-weight:bold;display:block;margin-top:10px;color:#475569;}
 input, select{
   width:100%;
   padding:10px;
+  margin-top:4px;
   border:1px solid var(--borda);
   border-radius:8px;
   font:inherit;
 }
 button.btn{
   width:100%;
-  padding:10px 15px;
+  padding:12px;
   background:var(--azul2);
   color:#fff;
   border:0;
   border-radius:8px;
   font-weight:bold;
+  margin-top:15px;
   cursor:pointer;
-  height:42px;
 }
 button.btn:hover{background:var(--azul);}
 
-/* LISTA DE CONTAS */
+/* LISTA */
 .conta-item{
   display:flex;
   justify-content:space-between;
@@ -118,7 +139,6 @@ button.btn:hover{background:var(--azul);}
   gap:10px;
 }
 
-/* STATUS TAGS / BOTÕES */
 .badge{
   padding:6px 12px;
   border-radius:20px;
@@ -135,8 +155,6 @@ button.btn:hover{background:var(--azul);}
   background:#dcfce7;
   color:#166534;
 }
-.badge.pendente:hover{background:#fde68a;}
-.badge.pago:hover{background:#bbf7d0;}
 
 .btn-apagar{
   background:transparent;
@@ -153,68 +171,90 @@ button.btn:hover{background:var(--azul);}
 
 <header>
   <h1>📈 RAÍZA FINANÇAS</h1>
-  <p>Painel de Controle de Contas do Mês</p>
+  <p>Controle Inteligente de Contas</p>
 </header>
 
 <div class="container">
 
-  <!-- RESUMO DO MÊS -->
-  <div class="resumo">
-    <div class="card-resumo">
-      <span>Total do Mês</span>
-      <strong class="val-total" id="valTotal">R$ 0,00</strong>
-    </div>
-    <div class="card-resumo">
-      <span>Já Pago</span>
-      <strong class="val-pago" id="valPago">R$ 0,00</strong>
-    </div>
-    <div class="card-resumo">
-      <span>Falta Pagar</span>
-      <strong class="val-pendente" id="valPendente">R$ 0,00</strong>
-    </div>
+  <!-- ABAS DE NAVEGAÇÃO -->
+  <div class="nav-abas">
+    <button class="btn-aba active" onclick="mudarAba('pagar', this)">📅 Contas a Pagar</button>
+    <button class="btn-aba" onclick="mudarAba('novo', this)">➕ Adicionar Conta</button>
   </div>
 
-  <!-- CADASTRAR CONTA -->
-  <div class="card">
-    <h3>➕ Adicionar Conta do Mês</h3>
-    <div class="form-grid">
-      <div>
-        <label>Descrição da Conta</label>
-        <input type="text" id="desc" placeholder="Ex: Aluguel, Luz, Internet...">
+  <!-- ABA: CONTAS A PAGAR -->
+  <div id="aba-pagar" class="conteudo-aba active">
+    
+    <!-- RESUMO -->
+    <div class="resumo">
+      <div class="card-resumo">
+        <span>Total Geral</span>
+        <strong class="val-total" id="valTotal">R$ 0,00</strong>
       </div>
-      <div>
-        <label>Valor (R$)</label>
-        <input type="number" step="0.01" id="valor" placeholder="0.00">
+      <div class="card-resumo">
+        <span>Já Pago</span>
+        <strong class="val-pago" id="valPago">R$ 0,00</strong>
       </div>
-      <div>
-        <label>Status Inicial</label>
-        <select id="status">
-          <option value="pendente">Pendente ⏳</option>
-          <option value="pago">Pago ✅</option>
-        </select>
-      </div>
-      <div>
-        <button class="btn" onclick="adicionarConta()">Adicionar</button>
+      <div class="card-resumo">
+        <span>Pendente</span>
+        <strong class="val-pendente" id="valPendente">R$ 0,00</strong>
       </div>
     </div>
+
+    <div class="card">
+      <h3>📋 Lista de Contas do Mês</h3>
+      <div id="listaContas">
+        <p style="color:#64748b;text-align:center;font-size:14px;">Nenhuma conta cadastrada.</p>
+      </div>
+    </div>
+
   </div>
 
-  <!-- LISTA DE CONTAS -->
-  <div class="card">
-    <h3>📋 Minhas Contas</h3>
-    <div id="listaContas">
-      <p style="color:#64748b;text-align:center;font-size:14px;">Nenhuma conta cadastrada para este mês.</p>
+  <!-- ABA: ADICIONAR CONTA -->
+  <div id="aba-novo" class="conteudo-aba">
+    <div class="card">
+      <h3>➕ Nova Conta a Pagar</h3>
+      
+      <label>Nome da Conta (ex: Aluguel, Luz, Cartão)</label>
+      <input type="text" id="desc" placeholder="Ex: Internet">
+
+      <label>Valor (R$)</label>
+      <input type="number" step="0.01" id="valor" placeholder="0.00">
+
+      <label>Data de Vencimento</label>
+      <input type="date" id="vencimento">
+
+      <label>Status Inicial</label>
+      <select id="status">
+        <option value="pendente">Pendente ⏳</option>
+        <option value="pago">Pago ✅</option>
+      </select>
+
+      <button class="btn" onclick="adicionarConta()">Salvar Conta</button>
     </div>
   </div>
 
 </div>
 
 <script>
-// Carregar dados salvos ou iniciar lista vazia
-let contas = JSON.parse(localStorage.getItem('raiza_contas_mes')) || [];
+let contas = JSON.parse(localStorage.getItem('raiza_contas_pagar')) || [];
+
+function mudarAba(abaId, btn) {
+  document.querySelectorAll('.conteudo-aba').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.btn-aba').forEach(el => el.classList.remove('active'));
+
+  document.getElementById('aba-' + abaId).classList.add('active');
+  btn.classList.add('active');
+}
 
 function formatarMoeda(valor) {
   return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
+
+function formatarData(dataIso) {
+  if (!dataIso) return '';
+  const partes = dataIso.split('-');
+  return `${partes[2]}/${partes[1]}/${partes[0]}`;
 }
 
 function atualizarPainel() {
@@ -226,7 +266,7 @@ function atualizarPainel() {
   let totalPendente = 0;
 
   if (contas.length === 0) {
-    listaEl.innerHTML = '<p style="color:#64748b;text-align:center;font-size:14px;">Nenhuma conta cadastrada para este mês.</p>';
+    listaEl.innerHTML = '<p style="color:#64748b;text-align:center;font-size:14px;">Nenhuma conta cadastrada.</p>';
   }
 
   contas.forEach((c, index) => {
@@ -242,13 +282,13 @@ function atualizarPainel() {
     div.innerHTML = `
       <div class="conta-info">
         <strong>${c.desc}</strong>
-        <small>${formatarMoeda(c.valor)}</small>
+        <small>${c.vencimento ? 'Vencimento: ' + formatarData(c.vencimento) + ' — ' : ''}${formatarMoeda(c.valor)}</small>
       </div>
       <div class="acoes">
-        <button class="badge ${c.status}" onclick="alternarStatus(${index})" title="Clique para alterar status">
+        <button class="badge ${c.status}" onclick="alternarStatus(${index})" title="Clique para alternar status">
           ${c.status === 'pago' ? '✅ Pago' : '⏳ Pendente'}
         </button>
-        <button class="btn-apagar" onclick="removerConta(${index})" title="Excluir conta">🗑️</button>
+        <button class="btn-apagar" onclick="removerConta(${index})" title="Excluir">🗑️</button>
       </div>
     `;
     listaEl.appendChild(div);
@@ -258,37 +298,35 @@ function atualizarPainel() {
   document.getElementById('valPago').textContent = formatarMoeda(totalPago);
   document.getElementById('valPendente').textContent = formatarMoeda(totalPendente);
 
-  // Salvar no navegador
-  localStorage.setItem('raiza_contas_mes', JSON.stringify(contas));
+  localStorage.setItem('raiza_contas_pagar', JSON.stringify(contas));
 }
 
 function adicionarConta() {
   const desc = document.getElementById('desc').value.trim();
   const valor = parseFloat(document.getElementById('valor').value);
+  const vencimento = document.getElementById('vencimento').value;
   const status = document.getElementById('status').value;
 
   if (!desc || isNaN(valor) || valor <= 0) {
-    alert('Por favor, informe a descrição e um valor válido.');
+    alert('Por favor, preencha o nome da conta e um valor válido.');
     return;
   }
 
-  contas.push({ desc, valor, status });
+  contas.push({ desc, valor, vencimento, status });
 
   // Limpar campos
   document.getElementById('desc').value = '';
   document.getElementById('valor').value = '';
+  document.getElementById('vencimento').value = '';
   document.getElementById('status').value = 'pendente';
 
+  // Voltar para a aba de listagem automaticamente
+  mudarAba('pagar', document.querySelector('.btn-aba'));
   atualizarPainel();
 }
 
 function alternarStatus(index) {
-  // Alterna entre pago e pendente com um clique no botão de status
-  if (contas[index].status === 'pendente') {
-    contas[index].status = 'pago';
-  } else {
-    contas[index].status = 'pendente';
-  }
+  contas[index].status = contas[index].status === 'pendente' ? 'pago' : 'pendente';
   atualizarPainel();
 }
 
@@ -299,7 +337,7 @@ function removerConta(index) {
   }
 }
 
-// Inicializar aplicativo
+// Inicializar
 atualizarPainel();
 </script>
 
