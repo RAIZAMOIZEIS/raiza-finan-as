@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>RAÍZA FINANÇAS — Painel Completo</title>
+<title>RAÍZA FINANÇAS — Painel com Categorias Personalizadas</title>
 <!-- Biblioteca Chart.js para o Gráfico de Pizza -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
@@ -129,7 +129,13 @@ button.btn{
 }
 button.btn:hover{background:var(--azul);}
 
-/* LISTAS */
+.btn-inline{
+  width:auto;
+  padding:10px 15px;
+  margin-top:4px;
+}
+
+/* LISTAS E CHIPS */
 .item-lista{
   display:flex;
   justify-content:space-between;
@@ -168,6 +174,25 @@ button.btn:hover{background:var(--azul);}
 }
 .btn-apagar:hover{color:var(--vermelho);}
 
+.categoria-tag{
+  display:inline-flex;
+  align-items:center;
+  background:#f1f5f9;
+  padding:6px 12px;
+  border-radius:20px;
+  font-size:13px;
+  margin:4px;
+  border:1px solid var(--borda);
+}
+.categoria-tag button{
+  background:transparent;
+  border:0;
+  color:var(--vermelho);
+  margin-left:8px;
+  cursor:pointer;
+  font-weight:bold;
+}
+
 /* GRÁFICO CONTAINER */
 .grafico-container{
   max-width:320px;
@@ -180,16 +205,17 @@ button.btn:hover{background:var(--azul);}
 
 <header>
   <h1>📈 RAÍZA FINANÇAS</h1>
-  <p>Controle Inteligente & Relatórios</p>
+  <p>Controle Inteligente & Categorias Customizadas</p>
 </header>
 
 <div class="container">
 
   <!-- ABAS DE NAVEGAÇÃO -->
   <div class="nav-abas">
-    <button class="btn-aba active" onclick="mudarAba('diarias', this)">💸 Lançamentos Diários</button>
-    <button class="btn-aba" onclick="mudarAba('fixas', this)">📅 Contas Fixas a Pagar</button>
-    <button class="btn-aba" onclick="mudarAba('relatorio', this)">📊 Gráfico de Gastos</button>
+    <button class="btn-aba active" onclick="mudarAba('diarias', this)">💸 Lançamentos</button>
+    <button class="btn-aba" onclick="mudarAba('fixas', this)">📅 Contas Fixas</button>
+    <button class="btn-aba" onclick="mudarAba('categorias', this)">🏷️ Categorias</button>
+    <button class="btn-aba" onclick="mudarAba('relatorio', this)">📊 Gráfico</button>
   </div>
 
   <!-- ================= ABA 1: LANÇAMENTOS DIÁRIOS ================= -->
@@ -214,18 +240,18 @@ button.btn:hover{background:var(--azul);}
       <h3>➕ Novo Lançamento Diário</h3>
       
       <label>Tipo</label>
-      <select id="tipoMov" onchange="atualizarCategoriasMov()">
+      <select id="tipoMov">
         <option value="saida">Saída (Despesa) 🔴</option>
         <option value="entrada">Entrada (Receita) 🟢</option>
       </select>
 
-      <label>Categoria</label>
+      <label>Categoria de Gasto</label>
       <select id="CatMov">
-        <!-- Preenchido via script dinamicamente -->
+        <!-- Preenchido via script -->
       </select>
 
-      <label>Descrição</label>
-      <input type="text" id="descMov" placeholder="Ex: Supermercado, Uber, Salário...">
+      <label>Descrição (Opcional)</label>
+      <input type="text" id="descMov" placeholder="Ex: Supermercado, Salão, Uber...">
 
       <label>Valor (R$)</label>
       <input type="number" step="0.01" id="valorMov" placeholder="0.00">
@@ -234,7 +260,7 @@ button.btn:hover{background:var(--azul);}
     </div>
 
     <div class="card">
-      <h3>📋 Histórico de Lançamentos Diários</h3>
+      <h3>📋 Histórico de Lançamentos</h3>
       <div id="listaMovimentacoes">
         <p style="color:#64748b;text-align:center;font-size:14px;">Nenhum lançamento registrado.</p>
       </div>
@@ -263,15 +289,11 @@ button.btn:hover{background:var(--azul);}
     <div class="card">
       <h3>➕ Adicionar Conta Fixa</h3>
       <label>Nome da Conta</label>
-      <input type="text" id="descFixa" placeholder="Ex: Aluguel, Internet, Escola">
+      <input type="text" id="descFixa" placeholder="Ex: Aluguel, Internet">
 
       <label>Categoria</label>
       <select id="catFixa">
-        <option value="Moradia">Moradia</option>
-        <option value="Contas Básicas">Contas Básicas</option>
-        <option value="Educação">Educação</option>
-        <option value="Assinaturas">Assinaturas</option>
-        <option value="Outros">Outros</option>
+        <!-- Preenchido via script -->
       </select>
 
       <label>Valor (R$)</label>
@@ -298,11 +320,28 @@ button.btn:hover{background:var(--azul);}
 
   </div>
 
-  <!-- ================= ABA 3: RELATÓRIO (GRÁFICO) ================= -->
+  <!-- ================= ABA 3: GERENCIAR CATEGORIAS ================= -->
+  <div id="aba-categorias" class="conteudo-aba">
+    <div class="card">
+      <h3>🏷️ Minhas Categorias de Gastos</h3>
+      <p style="font-size:13px; color:#64748b; margin-bottom:15px;">Adicione ou remova as categorias conforme sua rotina (ex: Alimentação, Beleza, Moradia, etc).</p>
+      
+      <div style="display:flex; gap:10px;">
+        <input type="text" id="novaCatInput" placeholder="Nome da nova categoria...">
+        <button class="btn btn-inline" onclick="adicionarCategoria()">Adicionar</button>
+      </div>
+
+      <div style="margin-top:20px;" id="listaCategoriasTag">
+        <!-- Tags geradas via script -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= ABA 4: RELATÓRIO (GRÁFICO) ================= -->
   <div id="aba-relatorio" class="conteudo-aba">
     <div class="card">
       <h3>📊 Distribuição de Gastos por Categoria</h3>
-      <p style="font-size:13px; color:#64748b; margin-bottom:20px; text-align:center;">Este gráfico agrupa automaticamente todas as suas saídas e contas fixas pagas por categoria.</p>
+      <p style="font-size:13px; color:#64748b; margin-bottom:20px; text-align:center;">Agrupa todas as saídas diárias e contas fixas pagas com base nas suas categorias.</p>
       
       <div class="grafico-container">
         <canvas id="graficoPizza"></canvas>
@@ -313,26 +352,82 @@ button.btn:hover{background:var(--azul);}
 </div>
 
 <script>
-// Carregamento de dados salvos
-let movimentacoesMes = JSON.parse(localStorage.getItem('raiza_mov_v2')) || [];
-let contasFixas = JSON.parse(localStorage.getItem('raiza_fixas_v2')) || [];
+// Dados salvos no navegador
+let categorias = JSON.parse(localStorage.getItem('raiza_categorias_v3')) || ["Alimentação", "Beleza", "Moradia", "Transporte", "Lazer", "Saúde", "Contas Básicas"];
+let movimentacoesMes = JSON.parse(localStorage.getItem('raiza_mov_v3')) || [];
+let contasFixas = JSON.parse(localStorage.getItem('raiza_fixas_v3')) || [];
 let meuGrafico = null;
 
-const catsSaida = ["Alimentação", "Transporte", "Lazer", "Saúde", "Moradia", "Contas Básicas", "Compras", "Outros"];
-const catsEntrada = ["Salário", "Extra / Vendas", "Outros"];
+function salvarTudo() {
+  localStorage.setItem('raiza_categorias_v3', JSON.stringify(categorias));
+  localStorage.setItem('raiza_mov_v3', JSON.stringify(movimentacoesMes));
+  localStorage.setItem('raiza_fixas_v3', JSON.stringify(contasFixas));
+}
 
-function atualizarCategoriasMov() {
-  const tipo = document.getElementById('tipoMov').value;
-  const selectCat = document.getElementById('CatMov');
-  selectCat.innerHTML = '';
+function atualizarSelectsCategorias() {
+  const selectMov = document.getElementById('CatMov');
+  const selectFixa = document.getElementById('catFixa');
   
-  const lista = (tipo === 'saida') ? catsSaida : catsEntrada;
-  lista.forEach(c => {
-    const opt = document.createElement('option');
-    opt.value = c;
-    opt.textContent = c;
-    selectCat.appendChild(opt);
+  selectMov.innerHTML = '';
+  selectFixa.innerHTML = '';
+
+  categorias.forEach(cat => {
+    const opt1 = document.createElement('option');
+    opt1.value = cat;
+    opt1.textContent = cat;
+    selectMov.appendChild(opt1);
+
+    const opt2 = document.createElement('option');
+    opt2.value = cat;
+    opt2.textContent = cat;
+    selectFixa.appendChild(opt2);
   });
+}
+
+function renderizarTagsCategorias() {
+  const container = document.getElementById('listaCategoriasTag');
+  container.innerHTML = '';
+
+  categorias.forEach((cat, index) => {
+    const span = document.createElement('span');
+    span.className = 'categoria-tag';
+    span.innerHTML = `${cat} <button onclick="removerCategoria(${index})" title="Excluir">×</button>`;
+    container.appendChild(span);
+  });
+}
+
+function adicionarCategoria() {
+  const input = document.getElementById('novaCatInput');
+  const nome = input.value.trim();
+
+  if (!nome) {
+    alert('Digite o nome da categoria.');
+    return;
+  }
+
+  if (categorias.includes(nome)) {
+    alert('Esta categoria já existe.');
+    return;
+  }
+
+  categorias.push(nome);
+  input.value = '';
+  salvarTudo();
+  atualizarSelectsCategorias();
+  renderizarTagsCategorias();
+}
+
+function removerCategoria(index) {
+  if (categorias.length <= 1) {
+    alert('Você precisa manter pelo menos uma categoria.');
+    return;
+  }
+  if (confirm(`Deseja apagar a categoria "${categorias[index]}"?`)) {
+    categorias.splice(index, 1);
+    salvarTudo();
+    atualizarSelectsCategorias();
+    renderizarTagsCategorias();
+  }
 }
 
 function mudarAba(abaId, btn) {
@@ -357,7 +452,7 @@ function formatarData(dataIso) {
   return `${partes[2]}/${partes[1]}/${partes[0]}`;
 }
 
-// ================= LÓGICA: MOVIMENTAÇÕES DIÁRIAS =================
+// ================= LÓGICA: MOVIMENTAÇÕES =================
 function atualizarPainelMovimentacoes() {
   const listaEl = document.getElementById('listaMovimentacoes');
   listaEl.innerHTML = '';
@@ -380,7 +475,7 @@ function atualizarPainelMovimentacoes() {
     div.className = 'item-lista';
     div.innerHTML = `
       <div class="info">
-        <strong>${m.desc}</strong>
+        <strong>${m.desc || m.categoria}</strong>
         <small>${m.categoria} — ${m.tipo === 'entrada' ? '🟢 Entrada' : '🔴 Saída'}</small>
       </div>
       <div class="acoes">
@@ -399,13 +494,13 @@ function atualizarPainelMovimentacoes() {
   document.getElementById('valSaidasMov').textContent = formatarMoeda(totalSaidas);
   document.getElementById('valSaldoMov').textContent = formatarMoeda(saldoAtual);
 
-  localStorage.setItem('raiza_mov_v2', JSON.stringify(movimentacoesMes));
+  salvarTudo();
 }
 
 function adicionarMovimentacao() {
   const tipo = document.getElementById('tipoMov').value;
   const categoria = document.getElementById('CatMov').value;
-  const desc = document.getElementById('descMov').value.trim() || categoria;
+  const desc = document.getElementById('descMov').value.trim();
   const valor = parseFloat(document.getElementById('valorMov').value);
 
   if (isNaN(valor) || valor <= 0) {
@@ -470,7 +565,7 @@ function atualizarPainelFixas() {
   document.getElementById('valPagoFixas').textContent = formatarMoeda(totalPago);
   document.getElementById('valPendenteFixas').textContent = formatarMoeda(totalPendente);
 
-  localStorage.setItem('raiza_fixas_v2', JSON.stringify(contasFixas));
+  salvarTudo();
 }
 
 function adicionarContaFixa() {
@@ -509,17 +604,14 @@ function removerContaFixa(index) {
 
 // ================= LÓGICA: GRÁFICO DE PIZZA =================
 function gerarGrafico() {
-  // Somar gastos de saídas diárias + contas fixas pagas agrupadas por categoria
   let totaisPorCategoria = {};
 
-  // Agregar saídas diárias
   movimentacoesMes.forEach(m => {
     if (m.tipo === 'saida') {
       totaisPorCategoria[m.categoria] = (totaisPorCategoria[m.categoria] || 0) + m.valor;
     }
   });
 
-  // Agregar contas fixas pagas
   contasFixas.forEach(c => {
     if (c.status === 'pago') {
       totaisPorCategoria[c.categoria] = (totaisPorCategoria[c.categoria] || 0) + c.valor;
@@ -536,7 +628,6 @@ function gerarGrafico() {
   }
 
   if (labels.length === 0) {
-    // Se não houver dados, desenha um gráfico vazio informativo
     meuGrafico = new Chart(ctx, {
       type: 'pie',
       data: {
@@ -555,7 +646,7 @@ function gerarGrafico() {
         data: dados,
         backgroundColor: [
           '#2563eb', '#16a34a', '#d97706', '#dc2626', 
-          '#9333ea', '#0d9488', '#db2777', '#475569'
+          '#9333ea', '#0d9488', '#db2777', '#475569', '#ca8a04', '#0284c7'
         ]
       }]
     },
@@ -570,8 +661,9 @@ function gerarGrafico() {
   });
 }
 
-// Inicializações básicas
-atualizarCategoriasMov();
+// Inicializar aplicativo
+atualizarSelectsCategorias();
+renderizarTagsCategorias();
 atualizarPainelMovimentacoes();
 atualizarPainelFixas();
 </script>
