@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>RAÍZA FINANÇAS — Painel com Categorias Personalizadas</title>
+<title>RAÍZA FINANÇAS — Edição de Categorias</title>
 <!-- Biblioteca Chart.js para o Gráfico de Pizza -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
@@ -135,7 +135,7 @@ button.btn:hover{background:var(--azul);}
   margin-top:4px;
 }
 
-/* LISTAS E CHIPS */
+/* LISTAS E CHIPS DE CATEGORIAS */
 .item-lista{
   display:flex;
   justify-content:space-between;
@@ -174,24 +174,30 @@ button.btn:hover{background:var(--azul);}
 }
 .btn-apagar:hover{color:var(--vermelho);}
 
-.categoria-tag{
-  display:inline-flex;
+/* ESTILO DA LISTA DE CATEGORIAS */
+.cat-row{
+  display:flex;
+  justify-content:space-between;
   align-items:center;
-  background:#f1f5f9;
-  padding:6px 12px;
-  border-radius:20px;
-  font-size:13px;
-  margin:4px;
-  border:1px solid var(--borda);
+  padding:10px 0;
+  border-bottom:1px solid var(--borda);
 }
-.categoria-tag button{
-  background:transparent;
-  border:0;
-  color:var(--vermelho);
-  margin-left:8px;
+.cat-row:last-child{border-bottom:0;}
+.cat-botoes{
+  display:flex;
+  gap:8px;
+}
+.btn-acao-cat{
+  background:#f1f5f9;
+  border:1px solid var(--borda);
+  padding:6px 10px;
+  border-radius:6px;
   cursor:pointer;
+  font-size:13px;
   font-weight:bold;
 }
+.btn-acao-cat:hover{background:#e2e8f0;}
+.btn-acao-cat.excluir{color:var(--vermelho);}
 
 /* GRÁFICO CONTAINER */
 .grafico-container{
@@ -205,7 +211,7 @@ button.btn:hover{background:var(--azul);}
 
 <header>
   <h1>📈 RAÍZA FINANÇAS</h1>
-  <p>Controle Inteligente & Categorias Customizadas</p>
+  <p>Controle Completo com Edição de Categorias</p>
 </header>
 
 <div class="container">
@@ -246,9 +252,7 @@ button.btn:hover{background:var(--azul);}
       </select>
 
       <label>Categoria de Gasto</label>
-      <select id="CatMov">
-        <!-- Preenchido via script -->
-      </select>
+      <select id="CatMov"></select>
 
       <label>Descrição (Opcional)</label>
       <input type="text" id="descMov" placeholder="Ex: Supermercado, Salão, Uber...">
@@ -292,9 +296,7 @@ button.btn:hover{background:var(--azul);}
       <input type="text" id="descFixa" placeholder="Ex: Aluguel, Internet">
 
       <label>Categoria</label>
-      <select id="catFixa">
-        <!-- Preenchido via script -->
-      </select>
+      <select id="catFixa"></select>
 
       <label>Valor (R$)</label>
       <input type="number" step="0.01" id="valorFixa" placeholder="0.00">
@@ -320,19 +322,19 @@ button.btn:hover{background:var(--azul);}
 
   </div>
 
-  <!-- ================= ABA 3: GERENCIAR CATEGORIAS ================= -->
+  <!-- ================= ABA 3: GERENCIAR E EDITAR CATEGORIAS ================= -->
   <div id="aba-categorias" class="conteudo-aba">
     <div class="card">
-      <h3>🏷️ Minhas Categorias de Gastos</h3>
-      <p style="font-size:13px; color:#64748b; margin-bottom:15px;">Adicione ou remova as categorias conforme sua rotina (ex: Alimentação, Beleza, Moradia, etc).</p>
+      <h3>🏷️ Gerenciar e Editar Categorias</h3>
+      <p style="font-size:13px; color:#64748b; margin-bottom:15px;">Adicione novas categorias ou clique em **Editar** para alterar o nome de uma existente.</p>
       
       <div style="display:flex; gap:10px;">
         <input type="text" id="novaCatInput" placeholder="Nome da nova categoria...">
         <button class="btn btn-inline" onclick="adicionarCategoria()">Adicionar</button>
       </div>
 
-      <div style="margin-top:20px;" id="listaCategoriasTag">
-        <!-- Tags geradas via script -->
+      <div style="margin-top:20px;" id="listaCategoriasGerenciar">
+        <!-- Linhas geradas via script -->
       </div>
     </div>
   </div>
@@ -341,7 +343,7 @@ button.btn:hover{background:var(--azul);}
   <div id="aba-relatorio" class="conteudo-aba">
     <div class="card">
       <h3>📊 Distribuição de Gastos por Categoria</h3>
-      <p style="font-size:13px; color:#64748b; margin-bottom:20px; text-align:center;">Agrupa todas as saídas diárias e contas fixas pagas com base nas suas categorias.</p>
+      <p style="font-size:13px; color:#64748b; margin-bottom:20px; text-align:center;">Agrupa suas saídas diárias e contas fixas pagas com base nas suas categorias.</p>
       
       <div class="grafico-container">
         <canvas id="graficoPizza"></canvas>
@@ -353,15 +355,15 @@ button.btn:hover{background:var(--azul);}
 
 <script>
 // Dados salvos no navegador
-let categorias = JSON.parse(localStorage.getItem('raiza_categorias_v3')) || ["Alimentação", "Beleza", "Moradia", "Transporte", "Lazer", "Saúde", "Contas Básicas"];
-let movimentacoesMes = JSON.parse(localStorage.getItem('raiza_mov_v3')) || [];
-let contasFixas = JSON.parse(localStorage.getItem('raiza_fixas_v3')) || [];
+let categorias = JSON.parse(localStorage.getItem('raiza_categorias_v4')) || ["Alimentação", "Beleza", "Moradia", "Transporte", "Lazer", "Saúde", "Contas Básicas"];
+let movimentacoesMes = JSON.parse(localStorage.getItem('raiza_mov_v4')) || [];
+let contasFixas = JSON.parse(localStorage.getItem('raiza_fixas_v4')) || [];
 let meuGrafico = null;
 
 function salvarTudo() {
-  localStorage.setItem('raiza_categorias_v3', JSON.stringify(categorias));
-  localStorage.setItem('raiza_mov_v3', JSON.stringify(movimentacoesMes));
-  localStorage.setItem('raiza_fixas_v3', JSON.stringify(contasFixas));
+  localStorage.setItem('raiza_categorias_v4', JSON.stringify(categorias));
+  localStorage.setItem('raiza_mov_v4', JSON.stringify(movimentacoesMes));
+  localStorage.setItem('raiza_fixas_v4', JSON.stringify(contasFixas));
 }
 
 function atualizarSelectsCategorias() {
@@ -384,15 +386,21 @@ function atualizarSelectsCategorias() {
   });
 }
 
-function renderizarTagsCategorias() {
-  const container = document.getElementById('listaCategoriasTag');
+function renderizarGerenciadorCategorias() {
+  const container = document.getElementById('listaCategoriasGerenciar');
   container.innerHTML = '';
 
   categorias.forEach((cat, index) => {
-    const span = document.createElement('span');
-    span.className = 'categoria-tag';
-    span.innerHTML = `${cat} <button onclick="removerCategoria(${index})" title="Excluir">×</button>`;
-    container.appendChild(span);
+    const div = document.createElement('div');
+    div.className = 'cat-row';
+    div.innerHTML = `
+      <strong style="font-size:14px;">${cat}</strong>
+      <div class="cat-botoes">
+        <button class="btn-acao-cat" onclick="editarCategoria(${index})">✏️ Editar</button>
+        <button class="btn-acao-cat excluir" onclick="removerCategoria(${index})">🗑️ Excluir</button>
+      </div>
+    `;
+    container.appendChild(div);
   });
 }
 
@@ -414,7 +422,43 @@ function adicionarCategoria() {
   input.value = '';
   salvarTudo();
   atualizarSelectsCategorias();
-  renderizarTagsCategorias();
+  renderizarGerenciadorCategorias();
+}
+
+function editarCategoria(index) {
+  const catAntiga = categorias[index];
+  const novoNome = prompt(`Editar nome da categoria "${catAntiga}":`, catAntiga);
+
+  if (novoNome === null) return; // Cancelou
+  const nomeLimpo = novoNome.trim();
+
+  if (!nomeLimpo) {
+    alert('O nome não pode ficar vazio.');
+    return;
+  }
+
+  if (categorias.includes(nomeLimpo)) {
+    alert('Já existe uma categoria com esse nome.');
+    return;
+  }
+
+  // Atualizar o nome na lista de categorias
+  categorias[index] = nomeLimpo;
+
+  // Atualizar também nos lançamentos diários e contas fixas existentes
+  movimentacoesMes.forEach(m => {
+    if (m.categoria === catAntiga) m.categoria = nomeLimpo;
+  });
+
+  contasFixas.forEach(c => {
+    if (c.categoria === catAntiga) c.categoria = nomeLimpo;
+  });
+
+  salvarTudo();
+  atualizarSelectsCategorias();
+  renderizarGerenciadorCategorias();
+  atualizarPainelMovimentacoes();
+  atualizarPainelFixas();
 }
 
 function removerCategoria(index) {
@@ -426,7 +470,7 @@ function removerCategoria(index) {
     categorias.splice(index, 1);
     salvarTudo();
     atualizarSelectsCategorias();
-    renderizarTagsCategorias();
+    renderizarGerenciadorCategorias();
   }
 }
 
@@ -663,7 +707,7 @@ function gerarGrafico() {
 
 // Inicializar aplicativo
 atualizarSelectsCategorias();
-renderizarTagsCategorias();
+renderizarGerenciadorCategorias();
 atualizarPainelMovimentacoes();
 atualizarPainelFixas();
 </script>
