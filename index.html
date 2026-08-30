@@ -3,1293 +3,250 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>RAÍZA FINANÇAS — Prévia Interativa</title>
-
+<title>RAÍZA FINANÇAS — Controle Real</title>
 <style>
 :root{
   --azul:#173f8a;
   --azul2:#2563eb;
   --verde:#16a34a;
   --vermelho:#dc2626;
-  --bg:#eef2f7;
+  --bg:#f8fafc;
   --texto:#1f2937;
-  --borda:#dbe2ea;
+  --borda:#e2e8f0;
 }
-
-*{
-  box-sizing:border-box;
-}
-
+*{box-sizing:border-box;}
 body{
   margin:0;
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
   background:var(--bg);
   color:var(--texto);
 }
-
-/* TOPO */
-.top{
-  position:sticky;
-  top:0;
-  z-index:20;
-  background:linear-gradient(120deg,#173f8a,#2563eb);
+header{
+  background:linear-gradient(120deg,var(--azul),var(--azul2));
   color:#fff;
-  padding:16px;
+  padding:20px;
+  text-align:center;
+}
+header h1{margin:0;font-size:22px;}
+header p{margin:5px 0 0;font-size:14px;opacity:0.9;}
+
+.container{
+  max-width:600px;
+  margin:20px auto;
+  padding:0 15px;
 }
 
-.topin{
-  max-width:1100px;
-  margin:auto;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-
-.brand{
-  font-weight:800;
-  font-size:20px;
-}
-
-.sub{
-  font-size:13px;
-  opacity:.85;
-}
-
-.eye{
-  border:0;
-  background:#ffffff22;
-  color:#fff;
-  border-radius:10px;
-  padding:9px;
-  font-size:17px;
-}
-
-/* ÁREA PRINCIPAL */
-.app{
-  max-width:1100px;
-  margin:auto;
-  padding:20px 20px 40px;
-  margin-left:230px;
-}
-
-.page{
-  display:none;
-}
-
-.page.active{
-  display:block;
-}
-
-h2{
-  margin:8px 0 14px;
-  font-size:26px;
-}
-
-/* MENU LATERAL */
-.bottom{
-  position:fixed;
-  top:0;
-  left:0;
-  bottom:0;
-  width:220px;
-  z-index:30;
-  background:#fff;
-  border-right:1px solid var(--borda);
-  display:flex;
-  flex-direction:column;
-  justify-content:flex-start;
-  overflow-y:auto;
-  padding:80px 10px 15px;
-}
-
-.navbtn{
-  border:0;
-  background:#fff;
-  color:#475569;
-  width:100%;
-  text-align:left;
-  padding:11px 12px;
-  margin-bottom:4px;
-  border-radius:11px;
-  font-size:14px;
-  cursor:pointer;
-}
-
-.navbtn b{
-  display:inline-block;
-  font-size:19px;
-  width:30px;
-}
-
-.navbtn.sel{
-  background:#dbeafe;
-  color:#1d4ed8;
-}
-
-/* CARDS */
-.card{
-  background:#fff;
-  border:1px solid var(--borda);
-  border-radius:18px;
-  padding:15px;
-  margin:10px 0;
-  box-shadow:0 3px 12px #0f172a0a;
-}
-
-.grid3{
+/* CARDS DE RESUMO */
+.resumo{
   display:grid;
   grid-template-columns:repeat(3,1fr);
-  gap:9px;
+  gap:10px;
+  margin-bottom:20px;
 }
-
-.sum{
-  color:#fff;
-  border-radius:14px;
-  padding:12px;
+.card-resumo{
+  background:#fff;
+  padding:15px;
+  border-radius:12px;
+  text-align:center;
+  box-shadow:0 2px 5px rgba(0,0,0,0.05);
+  border:1px solid var(--borda);
 }
+.card-resumo span{display:block;font-size:12px;color:#64748b;margin-bottom:5px;}
+.card-resumo strong{font-size:16px;}
+.val-entrada{color:var(--verde);}
+.val-saida{color:var(--vermelho);}
+.val-saldo{color:var(--azul2);}
 
-.sum b{
-  display:block;
-  font-size:17px;
-  margin-top:6px;
+/* FORMULÁRIO E LISTAS */
+.card{
+  background:#fff;
+  padding:20px;
+  border-radius:12px;
+  box-shadow:0 2px 5px rgba(0,0,0,0.05);
+  border:1px solid var(--borda);
+  margin-bottom:20px;
 }
+h3{margin-top:0;font-size:18px;color:var(--azul);}
 
-.green{
-  background:#16a34a;
-}
-
-.red{
-  background:#dc2626;
-}
-
-.blue{
-  background:#2563eb;
-}
-
-.money.hide{
-  filter:blur(7px);
-  user-select:none;
-}
-
-.row{
-  display:flex;
-  justify-content:space-between;
-  gap:12px;
-  padding:11px 0;
-  border-bottom:1px solid #edf0f3;
-}
-
-.row:last-child{
-  border-bottom:0;
-}
-
-small{
-  color:#64748b;
-}
-
-.pill{
-  font-size:11px;
-  padding:4px 8px;
-  border-radius:20px;
-  background:#fef3c7;
-  color:#92400e;
-}
-
-.paid{
-  background:#dcfce7;
-  color:#166534;
-}
-
-/* BOTÕES */
-button{
+label{font-size:13px;font-weight:bold;display:block;margin-top:10px;}
+input, select{
+  width:100%;
+  padding:10px;
+  margin-top:5px;
+  border:1px solid var(--borda);
+  border-radius:8px;
   font:inherit;
-  cursor:pointer;
 }
-
-.btn{
-  border:0;
-  border-radius:11px;
-  padding:11px 13px;
+button.btn{
+  width:100%;
+  padding:12px;
   background:var(--azul2);
   color:#fff;
-  font-weight:700;
-  cursor:pointer;
-}
-
-.btn.secondary{
-  background:#eef2ff;
-  color:#173f8a;
-}
-
-.btn.danger{
-  background:#fee2e2;
-  color:#991b1b;
-}
-
-.btn.full{
-  width:100%;
-  margin-top:8px;
-}
-
-/* CAMPOS */
-input,
-select{
-  width:100%;
-  padding:11px 12px;
-  margin:5px 0 9px;
-  border:1px solid #cfd7e2;
-  border-radius:10px;
-  background:#fff;
-  font:inherit;
-}
-
-label{
-  font-size:13px;
-  font-weight:700;
-}
-
-/* ABAS */
-.tabs{
-  display:flex;
-  gap:6px;
-  margin-bottom:8px;
-}
-
-.tabs button{
-  flex:1;
-  border:1px solid #dbe2ea;
-  background:#fff;
-  border-radius:9px;
-  padding:9px;
-  cursor:pointer;
-}
-
-.tabs button.on{
-  background:#173f8a;
-  color:#fff;
-}
-
-/* GRÁFICO DE PIZZA */
-.chartwrap{
-  display:flex;
-  align-items:center;
-  gap:18px;
-}
-
-.pie{
-  width:170px;
-  height:170px;
-  border-radius:50%;
-  background:conic-gradient(
-    #2563eb 0 35%,
-    #16a34a 35% 60%,
-    #dc2626 60% 78%,
-    #f59e0b 78% 90%,
-    #8b5cf6 90% 100%
-  );
-  flex:none;
-}
-
-.legend div{
-  font-size:13px;
-  margin:8px 0;
-}
-
-.dot{
-  display:inline-block;
-  width:10px;
-  height:10px;
-  border-radius:50%;
-  margin-right:7px;
-}
-
-/* BARRA DE PROGRESSO */
-.progress{
-  height:10px;
-  background:#e5e7eb;
-  border-radius:20px;
-  overflow:hidden;
-  margin-top:8px;
-}
-
-.progress span{
-  display:block;
-  height:100%;
-  background:var(--verde);
-  border-radius:20px;
-}
-
-/* POST-ITS */
-.note{
-  position:relative;
-  background:#fef08a;
-  min-height:115px;
-  padding:15px;
-  border-radius:8px;
-  margin:10px 0;
-  box-shadow:0 3px 9px #0001;
-}
-
-.note:nth-child(3n+2){
-  background:#dbeafe;
-}
-
-.note:nth-child(3n){
-  background:#fee2e2;
-}
-
-.note .x{
-  position:absolute;
-  right:8px;
-  top:7px;
   border:0;
-  background:#ffffff99;
-  border-radius:7px;
+  border-radius:8px;
+  font-weight:bold;
+  margin-top:15px;
+  cursor:pointer;
 }
+button.btn:hover{background:var(--azul);}
 
-/* COFRINHO */
-.box{
-  background:#f0fdf4;
-  border:1px solid #bbf7d0;
-  border-radius:15px;
-  padding:13px;
-  margin:9px 0;
-}
-
-/* ORGANIZAÇÃO */
-.drag{
-  padding:12px;
-  border-bottom:1px solid #eee;
+/* LISTA DE LANÇAMENTOS */
+.transacao-item{
   display:flex;
   justify-content:space-between;
+  align-items:center;
+  padding:10px 0;
+  border-bottom:1px solid var(--borda);
 }
-
-.drag button{
+.transacao-item:last-child{border-bottom:0;}
+.info-transacao small{color:#64748b;display:block;}
+.btn-apagar{
+  background:#fee2e2;
+  color:var(--vermelho);
   border:0;
-  background:#eef2ff;
-  border-radius:7px;
-  padding:4px 7px;
+  padding:6px 10px;
+  border-radius:6px;
+  cursor:pointer;
+  font-size:12px;
 }
-
-/* CELULAR */
-@media(max-width:700px){
-
-  .app{
-    padding-left:88px;
-    padding-right:12px;
-    padding-bottom:20px;
-    margin-left:0;
-  }
-
-  .bottom{
-    top:0;
-    bottom:0;
-    right:auto;
-    width:78px;
-    height:100vh;
-    flex-direction:column;
-    justify-content:flex-start;
-    overflow-y:auto;
-    overflow-x:hidden;
-    padding:88px 5px 12px;
-    background:#fff;
-    border-top:0;
-    border-right:1px solid var(--borda);
-  }
-
-  .navbtn{
-    min-width:0;
-    width:100%;
-    text-align:center;
-    padding:8px 3px;
-    margin-bottom:3px;
-    font-size:9px;
-  }
-
-  .navbtn b{
-    display:block;
-    width:auto;
-    font-size:19px;
-  }
-
-  .top{
-    padding-left:92px;
-  }
-
-  .topin{
-    margin:0;
-  }
-
-  .grid3{
-    grid-template-columns:1fr;
-  }
-
-  .sum{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-  }
-
-  .pie{
-    width:145px;
-    height:145px;
-  }
-
-  .chartwrap{
-    gap:12px;
-  }
-}
-
-@media(max-width:380px){
-
-  .app{
-    padding-left:82px;
-  }
-
-  .bottom{
-    width:72px;
-  }
-
-  .top{
-    padding-left:82px;
-  }
-
-}
+.btn-apagar:hover{background:#fecaca;}
 </style>
 </head>
-
 <body>
 
-<div class="top">
-  <div class="topin">
+<header>
+  <h1>📈 RAÍZA FINANÇAS</h1>
+  <p>Controle Financeiro Direto e Funcional</p>
+</header>
 
-    <div>
-      <div class="brand">📈 RAÍZA FINANÇAS</div>
-      <div class="sub" id="greeting">Olá, Raíza 👋</div>
+<div class="container">
+
+  <!-- RESUMO FINANCEIRO -->
+  <div class="resumo">
+    <div class="card-resumo">
+      <span>Entradas</span>
+      <strong class="val-entrada" id="totalEntrada">R$ 0,00</strong>
     </div>
-
-    <button class="eye" onclick="toggleMoney()">👁️</button>
-
+    <div class="card-resumo">
+      <span>Saídas</span>
+      <strong class="val-saida" id="totalSaida">R$ 0,00</strong>
+    </div>
+    <div class="card-resumo">
+      <span>Saldo</span>
+      <strong class="val-saldo" id="totalSaldo">R$ 0,00</strong>
+    </div>
   </div>
-</div>
 
-<main class="app">
+  <!-- FORMULÁRIO DE CADASTRO -->
+  <div class="card">
+    <h3>➕ Adicionar Movimentação</h3>
+    
+    <label>Tipo</label>
+    <select id="tipo">
+      <option value="entrada">Entrada (Receita) 🟢</option>
+      <option value="saida">Saída (Despesa) 🔴</option>
+    </select>
 
-<!-- DASHBOARD -->
+    <label>Descrição</label>
+    <input type="text" id="descricao" placeholder="Ex: Salário, Aluguel, Supermercado...">
 
-<section id="dash" class="page active">
+    <label>Valor (R$)</label>
+    <input type="number" step="0.01" id="valor" placeholder="0.00">
 
-<h2>🏠 Dashboard</h2>
+    <button class="btn" onclick="adicionarTransacao()">Salvar Lançamento</button>
+  </div>
 
-<div class="grid3">
-
-<div class="sum green">
-🟢 Entradas
-<b class="money">R$ 12.450,00</b>
-</div>
-
-<div class="sum red">
-🔴 Saídas
-<b class="money">R$ 7.320,00</b>
-</div>
-
-<div class="sum blue">
-🔵 Saldo
-<b class="money">R$ 5.130,00</b>
-</div>
-
-</div>
-
-<div class="card">
-
-<b>📅 Próximas contas</b>
-
-<div class="row">
-<span>
-Internet<br>
-<small>15/05</small>
-</span>
-
-<b class="money">R$ 99,90</b>
-</div>
-
-<div class="row">
-<span>
-Plano de saúde<br>
-<small>20/05</small>
-</span>
-
-<b class="money">R$ 350,00</b>
-</div>
-
-<button class="btn secondary full" onclick="go('contas', document.getElementById('btn-contas'))">
-Ver contas a pagar
-</button>
+  <!-- HISTÓRICO DE LANÇAMENTOS -->
+  <div class="card">
+    <h3>📋 Histórico de Contas</h3>
+    <div id="listaTransacoes">
+      <p style="color:#64748b;text-align:center;font-size:14px;">Nenhuma movimentação cadastrada.</p>
+    </div>
+  </div>
 
 </div>
-
-</section>
-
-
-<!-- LANÇAMENTOS -->
-
-<section id="lanc" class="page">
-
-<h2>➕ Novo lançamento</h2>
-
-<div class="card">
-
-<label>Tipo</label>
-
-<div class="tabs">
-<button class="on" onclick="this.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('on')); this.classList.add('on');">Entrada 🟢</button>
-<button onclick="this.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('on')); this.classList.add('on');">Saída 🔴</button>
-</div>
-
-<label>Descrição</label>
-<input placeholder="Ex.: Salário, supermercado...">
-
-<label>Valor</label>
-<input placeholder="R$ 0,00">
-
-<label>Categoria</label>
-
-<select>
-<option>Selecione</option>
-<option>Alimentação</option>
-<option>Moradia</option>
-<option>Transporte</option>
-<option>Saúde</option>
-</select>
-
-<label>Data</label>
-<input type="date">
-
-<label>Forma de pagamento</label>
-
-<select>
-<option>Selecione</option>
-<option>Pix</option>
-<option>Dinheiro</option>
-<option>Cartão de crédito</option>
-</select>
-
-<label>Cartão (opcional)</label>
-
-<select>
-<option>Selecione</option>
-<option>Nubank</option>
-<option>Itaú</option>
-</select>
-
-<label>Observação</label>
-<input placeholder="Comentário breve">
-
-<button class="btn full"
-onclick="alert('Lançamento salvo com sucesso!')">
-Salvar lançamento
-</button>
-
-</div>
-
-</section>
-
-
-<!-- CARTÕES -->
-
-<section id="cartoes" class="page">
-
-<h2>💳 Cartões de crédito</h2>
-
-<div class="card"
-style="background:linear-gradient(135deg,#3b176f,#7c3aed);color:white">
-
-<b>💳 Nubank</b>
-
-<div style="font-size:24px;font-weight:800;margin:8px 0"
-class="money">
-R$ 1.250,80
-</div>
-
-<small style="color:#ddd">
-Fatura atual
-</small>
-
-<div class="progress">
-<span style="width:31%;background:#c4b5fd"></span>
-</div>
-
-</div>
-
-
-<div class="card">
-
-<b>Lançamentos da fatura</b>
-
-<div class="row">
-Mercado Livre
-<b class="money">R$ 250,00</b>
-</div>
-
-<div class="row">
-Posto
-<b class="money">R$ 180,00</b>
-</div>
-
-<div class="row">
-Amazon
-<b class="money">R$ 320,50</b>
-</div>
-
-<small>
-💡 Integrado aos gastos: não precisa cadastrar duas vezes.
-</small>
-
-</div>
-
-<button class="btn full"
-onclick="alert('Abrindo tela para adicionar novo cartão de crédito.')">
-➕ Adicionar cartão
-</button>
-
-</section>
-
-
-<!-- CONTAS A PAGAR -->
-
-<section id="contas" class="page">
-
-<h2>📅 Contas a pagar</h2>
-
-<div class="tabs">
-
-<button class="on" onclick="this.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('on')); this.classList.add('on');">Pendentes</button>
-<button onclick="this.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('on')); this.classList.add('on');">Pagas</button>
-<button onclick="this.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('on')); this.classList.add('on');">Vencidas</button>
-
-</div>
-
-<div class="card">
-
-<div class="row">
-
-<span>
-🌐 Internet<br>
-<small>15/05/2026</small>
-</span>
-
-<span>
-<b class="money">R$ 99,90</b>
-<br>
-<button class="btn secondary"
-onclick="markPaid(this)">
-Marcar paga
-</button>
-</span>
-
-</div>
-
-
-<div class="row">
-
-<span>
-❤️ Plano de saúde<br>
-<small>20/05/2026</small>
-</span>
-
-<span>
-<b class="money">R$ 350,00</b>
-<br>
-<button class="btn secondary" onclick="markPaid(this)">Marcar paga</button>
-</span>
-
-</div>
-
-
-<div class="row">
-
-<span>
-🎓 Escola<br>
-<small>25/05/2026</small>
-</span>
-
-<span>
-<b class="money">R$ 480,00</b>
-<br>
-<button class="btn secondary" onclick="markPaid(this)">Marcar paga</button>
-</span>
-
-</div>
-
-</div>
-
-<button class="btn full"
-onclick="alert('Abrindo formulário para adicionar uma nova conta a pagar.')">
-➕ Adicionar conta
-</button>
-
-</section>
-
-
-<!-- RELATÓRIOS -->
-
-<section id="rel" class="page">
-
-<h2>📊 Relatórios</h2>
-
-<div class="card">
-
-<b>🍕 Gastos por categoria</b>
-
-<div class="chartwrap">
-
-<div class="pie"></div>
-
-<div class="legend">
-
-<div>
-<span class="dot" style="background:#2563eb"></span>
-Alimentação 35%
-</div>
-
-<div>
-<span class="dot" style="background:#16a34a"></span>
-Moradia 25%
-</div>
-
-<div>
-<span class="dot" style="background:#dc2626"></span>
-Transporte 18%
-</div>
-
-<div>
-<span class="dot" style="background:#f59e0b"></span>
-Saúde 12%
-</div>
-
-<div>
-<span class="dot" style="background:#8b5cf6"></span>
-Outros 10%
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-
-<div class="grid3">
-
-<div class="card">
-🔴 Saídas
-<br>
-<b class="money">R$ 7.320,00</b>
-</div>
-
-<div class="card">
-🟢 Entradas
-<br>
-<b class="money">R$ 12.450,00</b>
-</div>
-
-<div class="card">
-🔵 Saldo
-<br>
-<b class="money">R$ 5.130,00</b>
-</div>
-
-</div>
-
-</section>
-
-
-<!-- DINHEIRO GUARDADO -->
-
-<section id="cofre" class="page">
-
-<h2>🐷 Dinheiro guardado</h2>
-
-<div class="card green" style="color:white">
-
-<small style="color:white">
-TOTAL GUARDADO
-</small>
-
-<div style="font-size:28px;font-weight:800"
-class="money">
-R$ 3.000,00
-</div>
-
-</div>
-
-
-<div class="box">
-
-<b>🏦 Nubank</b>
-
-<div class="money">
-R$ 1.000,00
-</div>
-
-</div>
-
-
-<div class="box">
-
-<b>🔐 Cofre físico</b>
-
-<div class="money">
-R$ 2.000,00
-</div>
-
-</div>
-
-
-<button class="btn full"
-onclick="alert('Abrindo painel para criar uma nova caixinha de reserva.')">
-➕ Nova caixinha
-</button>
-
-</section>
-
-
-<!-- METAS -->
-
-<section id="metas" class="page">
-
-<h2>🎯 Metas financeiras</h2>
-
-<div class="card">
-
-<b>Viagem Europa ✈️</b>
-
-<div class="row">
-
-<span>Guardado</span>
-
-<b class="money">
-R$ 3.000,00 / R$ 10.000,00
-</b>
-
-</div>
-
-<div class="progress">
-<span style="width:30%"></span>
-</div>
-
-<small>
-30% concluído · Faltam R$ 7.000,00
-</small>
-
-</div>
-
-
-<div class="card">
-
-<b>Comprar carro 🚗</b>
-
-<div class="row">
-
-<span>Guardado</span>
-
-<b class="money">
-R$ 12.000,00 / R$ 50.000,00
-</b>
-
-</div>
-
-<div class="progress">
-<span style="width:24%"></span>
-</div>
-
-</div>
-
-
-<button class="btn full" onclick="alert('Abrindo formulário de criação de nova meta.')">
-➕ Nova meta
-</button>
-
-</section>
-
-
-<!-- OBSERVAÇÕES -->
-
-<section id="obs" class="page">
-
-<h2>📝 Observações</h2>
-
-<div id="notes">
-
-<div class="note" contenteditable="true">
-
-Lembrar de conferir a fatura do cartão ✨
-
-<button class="x"
-onclick="this.parentElement.remove()">
-✕
-</button>
-
-</div>
-
-
-<div class="note" contenteditable="true">
-
-Consulta médica dia 22/05 🩺
-
-<button class="x"
-onclick="this.parentElement.remove()">
-✕
-</button>
-
-</div>
-
-</div>
-
-
-<button class="btn full" onclick="newNote()">
-➕ Novo post-it
-</button>
-
-</section>
-
-
-<!-- CATEGORIAS -->
-
-<section id="cats" class="page">
-
-<h2>🏷️ Categorias</h2>
-
-<div class="card">
-
-<div class="row">
-🍔 Alimentação
-<button class="btn secondary" onclick="alert('Editar categoria Alimentação')">✏️</button>
-</div>
-
-<div class="row">
-🏠 Moradia
-<button class="btn secondary" onclick="alert('Editar categoria Moradia')">✏️</button>
-</div>
-
-<div class="row">
-🚗 Transporte
-<button class="btn secondary" onclick="alert('Editar categoria Transporte')">✏️</button>
-</div>
-
-<div class="row">
-❤️ Saúde
-<button class="btn secondary" onclick="alert('Editar categoria Saúde')">✏️</button>
-</div>
-
-</div>
-
-
-<button class="btn full"
-onclick="addCategory()">
-➕ Nova categoria
-</button>
-
-</section>
-
-
-<!-- ORGANIZAR -->
-
-<section id="org" class="page">
-
-<h2>↕️ Organizar menu</h2>
-
-<div class="card" id="menuList">
-
-<div class="drag">
-🏠 Dashboard
-
-<span>
-<button onclick="move(this,-1)">⬆️</button>
-<button onclick="move(this,1)">⬇️</button>
-</span>
-
-</div>
-
-
-<div class="drag">
-➕ Lançamentos
-
-<span>
-<button onclick="move(this,-1)">⬆️</button>
-<button onclick="move(this,1)">⬇️</button>
-</span>
-
-</div>
-
-
-<div class="drag">
-💳 Cartões
-
-<span>
-<button onclick="move(this,-1)">⬆️</button>
-<button onclick="move(this,1)">⬇️</button>
-</span>
-
-</div>
-
-
-<div class="drag">
-📅 Contas
-
-<span>
-<button onclick="move(this,-1)">⬆️</button>
-<button onclick="move(this,1)">⬇️</button>
-</span>
-
-</div>
-
-
-<div class="drag">
-📊 Relatórios
-
-<span>
-<button onclick="move(this,-1)">⬆️</button>
-<button onclick="move(this,1)">⬇️</button>
-</span>
-
-</div>
-
-</div>
-
-<small>
-Nesta prévia você já pode testar a ideia de reorganização.
-</small>
-
-</section>
-
-
-<!-- PERFIL -->
-
-<section id="perfil" class="page">
-
-<h2>👤 Meu perfil</h2>
-
-<div class="card">
-
-<label>Nome exibido</label>
-
-<input id="nameInput" value="Raíza">
-
-<label>E-mail</label>
-
-<input value="raiza@email.com">
-
-<button class="btn full"
-onclick="saveName()">
-Salvar alterações
-</button>
-
-</div>
-
-</section>
-
-</main>
-
-
-<!-- MENU -->
-
-<nav class="bottom">
-
-<button class="navbtn sel" id="btn-dash"
-onclick="go('dash',this)">
-<b>🏠</b>
-Dashboard
-</button>
-
-<button class="navbtn" id="btn-lanc"
-onclick="go('lanc',this)">
-<b>➕</b>
-Lançar
-</button>
-
-<button class="navbtn" id="btn-cartoes"
-onclick="go('cartoes',this)">
-<b>💳</b>
-Cartões
-</button>
-
-<button class="navbtn" id="btn-contas"
-onclick="go('contas',this)">
-<b>📅</b>
-Contas
-</button>
-
-<button class="navbtn" id="btn-rel"
-onclick="go('rel',this)">
-<b>📊</b>
-Relatórios
-</button>
-
-<button class="navbtn" id="btn-cofre"
-onclick="go('cofre',this)">
-<b>🐷</b>
-Guardado
-</button>
-
-<button class="navbtn" id="btn-metas"
-onclick="go('metas',this)">
-<b>🎯</b>
-Metas
-</button>
-
-<button class="navbtn" id="btn-obs"
-onclick="go('obs',this)">
-<b>📝</b>
-Notas
-</button>
-
-<button class="navbtn" id="btn-cats"
-onclick="go('cats',this)">
-<b>🏷️</b>
-Categorias
-</button>
-
-<button class="navbtn" id="btn-org"
-onclick="go('org',this)">
-<b>↕️</b>
-Organizar
-</button>
-
-<button class="navbtn" id="btn-perfil"
-onclick="go('perfil',this)">
-<b>👤</b>
-Perfil
-</button>
-
-</nav>
-
 
 <script>
+// Carregar dados salvos do navegador ou iniciar lista vazia
+let transacoes = JSON.parse(localStorage.getItem('raiza_transacoes')) || [];
 
-/* NAVEGAÇÃO */
+function formatarMoeda(valor) {
+  return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
 
-function go(id,b){
+function atualizarApp() {
+  const listaEl = document.getElementById('listaTransacoes');
+  listaEl.innerHTML = '';
 
-  document.querySelectorAll('.page').forEach(function(p){
-    p.classList.remove('active');
+  let totalEntrada = 0;
+  let totalSaida = 0;
+
+  if (transacoes.length === 0) {
+    listaEl.innerHTML = '<p style="color:#64748b;text-align:center;font-size:14px;">Nenhuma movimentação cadastrada.</p>';
+  }
+
+  transacoes.forEach((t, index) => {
+    if (t.tipo === 'entrada') {
+      totalEntrada += t.valor;
+    } else {
+      totalSaida += t.valor;
+    }
+
+    const div = document.createElement('div');
+    div.className = 'transacao-item';
+    div.innerHTML = `
+      <div class="info-transacao">
+        <strong>${t.descricao}</strong>
+        <small>${t.tipo === 'entrada' ? '🟢 Entrada' : '🔴 Saída'}</small>
+      </div>
+      <div>
+        <span style="font-weight:bold; color:${t.tipo === 'entrada' ? 'var(--verde)' : 'var(--vermelho)'}; margin-right:10px;">
+          ${t.tipo === 'entrada' ? '+' : '-'} ${formatarMoeda(t.valor)}
+        </span>
+        <button class="btn-apagar" onclick="removerTransacao(${index})">Excluir</button>
+      </div>
+    `;
+    listaEl.appendChild(div);
   });
 
-  document.getElementById(id).classList.add('active');
+  let saldoTotal = totalEntrada - totalSaida;
 
-  if(b){
+  document.getElementById('totalEntrada').textContent = formatarMoeda(totalEntrada);
+  document.getElementById('totalSaida').textContent = formatarMoeda(totalSaida);
+  document.getElementById('totalSaldo').textContent = formatarMoeda(saldoTotal);
 
-    document.querySelectorAll('.navbtn').forEach(function(x){
-      x.classList.remove('sel');
-    });
+  // Salvar automaticamente na memória do navegador
+  localStorage.setItem('raiza_transacoes', JSON.stringify(transacoes));
+}
 
-    b.classList.add('sel');
+function adicionarTransacao() {
+  const tipo = document.getElementById('tipo').value;
+  const descricao = document.getElementById('descricao').value.trim();
+  const valor = parseFloat(document.getElementById('valor').value);
+
+  if (!descricao || isNaN(valor) || valor <= 0) {
+    alert('Por favor, preencha a descrição e informe um valor válido.');
+    return;
   }
 
-  window.scrollTo({
-    top:0,
-    behavior:'smooth'
-  });
+  transacoes.push({ tipo, descricao, valor });
+  
+  // Limpar campos
+  document.getElementById('descricao').value = '';
+  document.getElementById('valor').value = '';
 
+  atualizarApp();
 }
 
-
-/* OCULTAR VALORES */
-
-function toggleMoney(){
-
-  document.querySelectorAll('.money').forEach(function(x){
-    x.classList.toggle('hide');
-  });
-
-}
-
-
-/* MARCAR CONTA COMO PAGA */
-
-function markPaid(btn){
-
-  btn.parentElement.innerHTML =
-  '<b class="money">R$ 99,90</b><br>' +
-  '<span class="pill paid">✓ Paga</span>';
-
-}
-
-
-/* NOVO POST-IT */
-
-function newNote(){
-
-  var n=document.createElement('div');
-
-  n.className='note';
-
-  n.contentEditable='true';
-
-  n.innerHTML =
-  'Escreva uma observação...' +
-  '<button class="x" onclick="this.parentElement.remove()">✕</button>';
-
-  document.getElementById('notes').appendChild(n);
-
-}
-
-
-/* NOVA CATEGORIA */
-
-function addCategory(){
-
-  var n=prompt('Nome da nova categoria:');
-
-  if(n){
-    alert('Prévia: categoria "'+n+'" criada!');
+function removerTransacao(index) {
+  if (confirm('Deseja realmente apagar este lançamento?')) {
+    transacoes.splice(index, 1);
+    atualizarApp();
   }
-
 }
 
-
-/* SALVAR NOME */
-
-function saveName(){
-
-  var n=document.getElementById('nameInput').value.trim();
-
-  if(n){
-
-    document.getElementById('greeting').textContent =
-    'Olá, '+n+' 👋';
-
-    alert('Nome atualizado na prévia!');
-
-  }
-
-}
-
-
-/* ORGANIZAR MENU */
-
-function move(btn,dir){
-
-  var row=btn.closest('.drag');
-
-  var p=row.parentElement;
-
-  var other=
-  dir<0 ?
-  row.previousElementSibling :
-  row.nextElementSibling;
-
-  if(other){
-
-    p.insertBefore(
-      dir<0 ? row : other,
-      dir<0 ? other : row
-    );
-
-  }
-
-}
-
+// Inicializar na abertura da página
+atualizarApp();
 </script>
 
 </body>
