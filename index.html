@@ -3,7 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>RAÍZA FINANÇAS — Controle Completo</title>
+<title>RAÍZA FINANÇAS — Painel Completo</title>
+<!-- Biblioteca Chart.js para o Gráfico de Pizza -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 :root{
   --azul:#173f8a;
@@ -32,7 +34,7 @@ header h1{margin:0;font-size:22px;}
 header p{margin:5px 0 0;font-size:14px;opacity:0.9;}
 
 .container{
-  max-width:700px;
+  max-width:750px;
   margin:20px auto;
   padding:0 15px;
 }
@@ -40,13 +42,13 @@ header p{margin:5px 0 0;font-size:14px;opacity:0.9;}
 /* ABAS DE NAVEGAÇÃO */
 .nav-abas{
   display:flex;
-  gap:8px;
+  gap:6px;
   margin-bottom:20px;
   overflow-x:auto;
 }
 .btn-aba{
   flex:1;
-  padding:12px;
+  padding:12px 10px;
   background:#fff;
   border:1px solid var(--borda);
   border-radius:10px;
@@ -55,6 +57,7 @@ header p{margin:5px 0 0;font-size:14px;opacity:0.9;}
   cursor:pointer;
   text-align:center;
   white-space:nowrap;
+  font-size:13px;
 }
 .btn-aba.active{
   background:var(--azul);
@@ -85,7 +88,7 @@ header p{margin:5px 0 0;font-size:14px;opacity:0.9;}
   border:1px solid var(--borda);
 }
 .card-resumo span{display:block;font-size:12px;color:#64748b;margin-bottom:5px;}
-.card-resumo strong{font-size:15px;}
+.card-resumo strong{font-size:14px;}
 .val-total{color:var(--azul);}
 .val-pago{color:var(--verde);}
 .val-pendente{color:var(--amarelo);}
@@ -102,7 +105,7 @@ header p{margin:5px 0 0;font-size:14px;opacity:0.9;}
   border:1px solid var(--borda);
   margin-bottom:20px;
 }
-h3{margin-top:0;font-size:18px;color:var(--azul);}
+h3{margin-top:0;font-size:17px;color:var(--azul);}
 
 label{font-size:12px;font-weight:bold;display:block;margin-top:10px;color:#475569;}
 input, select{
@@ -135,7 +138,7 @@ button.btn:hover{background:var(--azul);}
   border-bottom:1px solid var(--borda);
 }
 .item-lista:last-child{border-bottom:0;}
-.info strong{display:block;font-size:15px;}
+.info strong{display:block;font-size:14px;}
 .info small{color:#64748b;}
 
 .acoes{
@@ -164,125 +167,173 @@ button.btn:hover{background:var(--azul);}
   padding:4px;
 }
 .btn-apagar:hover{color:var(--vermelho);}
+
+/* GRÁFICO CONTAINER */
+.grafico-container{
+  max-width:320px;
+  margin:0 auto;
+  position:relative;
+}
 </style>
 </head>
 <body>
 
 <header>
   <h1>📈 RAÍZA FINANÇAS</h1>
-  <p>Controle de Contas e Movimentações Diárias</p>
+  <p>Controle Inteligente & Relatórios</p>
 </header>
 
 <div class="container">
 
   <!-- ABAS DE NAVEGAÇÃO -->
   <div class="nav-abas">
-    <button class="btn-aba active" onclick="mudarAba('pagar', this)">📅 Contas a Pagar</button>
-    <button class="btn-aba" onclick="mudarAba('diarias', this)">💸 Movimentações Diárias</button>
+    <button class="btn-aba active" onclick="mudarAba('diarias', this)">💸 Lançamentos Diários</button>
+    <button class="btn-aba" onclick="mudarAba('fixas', this)">📅 Contas Fixas a Pagar</button>
+    <button class="btn-aba" onclick="mudarAba('relatorio', this)">📊 Gráfico de Gastos</button>
   </div>
 
-  <!-- ================= ABA 1: CONTAS A PAGAR ================= -->
-  <div id="aba-pagar" class="conteudo-aba active">
-    
-    <div class="resumo">
-      <div class="card-resumo">
-        <span>Total Geral</span>
-        <strong class="val-total" id="valTotalPagar">R$ 0,00</strong>
-      </div>
-      <div class="card-resumo">
-        <span>Já Pago</span>
-        <strong class="val-pago" id="valPago">R$ 0,00</strong>
-      </div>
-      <div class="card-resumo">
-        <span>Pendente</span>
-        <strong class="val-pendente" id="valPendente">R$ 0,00</strong>
-      </div>
-    </div>
-
-    <!-- CADASTRAR CONTA -->
-    <div class="card">
-      <h3>➕ Adicionar Conta a Pagar</h3>
-      <label>Nome da Conta</label>
-      <input type="text" id="descPagar" placeholder="Ex: Aluguel, Luz, Internet">
-
-      <label>Valor (R$)</label>
-      <input type="number" step="0.01" id="valorPagar" placeholder="0.00">
-
-      <label>Data de Vencimento</label>
-      <input type="date" id="vencimentoPagar">
-
-      <label>Status Inicial</label>
-      <select id="statusPagar">
-        <option value="pendente">Pendente ⏳</option>
-        <option value="pago">Pago ✅</option>
-      </select>
-
-      <button class="btn" onclick="adicionarContaPagar()">Salvar Conta</button>
-    </div>
-
-    <!-- LISTA DE CONTAS -->
-    <div class="card">
-      <h3>📋 Minhas Contas a Pagar</h3>
-      <div id="listaContasPagar">
-        <p style="color:#64748b;text-align:center;font-size:14px;">Nenhuma conta cadastrada.</p>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- ================= ABA 2: MOVIMENTAÇÕES DIÁRIAS ================= -->
-  <div id="aba-diarias" class="conteudo-aba">
+  <!-- ================= ABA 1: LANÇAMENTOS DIÁRIOS ================= -->
+  <div id="aba-diarias" class="conteudo-aba active">
     
     <div class="resumo">
       <div class="card-resumo">
         <span>Entradas</span>
-        <strong class="val-entrada" id="valEntradas">R$ 0,00</strong>
+        <strong class="val-entrada" id="valEntradasMov">R$ 0,00</strong>
       </div>
       <div class="card-resumo">
         <span>Saídas</span>
-        <strong class="val-saida" id="valSaidas">R$ 0,00</strong>
+        <strong class="val-saida" id="valSaidasMov">R$ 0,00</strong>
       </div>
       <div class="card-resumo">
-        <span>Saldo do Dia</span>
-        <strong class="val-saldo" id="valSaldoDiario">R$ 0,00</strong>
+        <span>Saldo Atual</span>
+        <strong class="val-saldo" id="valSaldoMov">R$ 0,00</strong>
       </div>
     </div>
 
-    <!-- CADASTRAR MOVIMENTAÇÃO -->
     <div class="card">
-      <h3>➕ Nova Movimentação Diária</h3>
+      <h3>➕ Novo Lançamento Diário</h3>
       
       <label>Tipo</label>
-      <select id="tipoMov">
-        <option value="entrada">Entrada (Receita) 🟢</option>
+      <select id="tipoMov" onchange="atualizarCategoriasMov()">
         <option value="saida">Saída (Despesa) 🔴</option>
+        <option value="entrada">Entrada (Receita) 🟢</option>
+      </select>
+
+      <label>Categoria</label>
+      <select id="CatMov">
+        <!-- Preenchido via script dinamicamente -->
       </select>
 
       <label>Descrição</label>
-      <input type="text" id="descMov" placeholder="Ex: Venda, Mercado, Uber...">
+      <input type="text" id="descMov" placeholder="Ex: Supermercado, Uber, Salário...">
 
       <label>Valor (R$)</label>
       <input type="number" step="0.01" id="valorMov" placeholder="0.00">
 
-      <button class="btn" onclick="adicionarMovimentacao()">Salvar Movimentação</button>
+      <button class="btn" onclick="adicionarMovimentacao()">Salvar Lançamento</button>
     </div>
 
-    <!-- LISTA DE MOVIMENTAÇÕES -->
     <div class="card">
-      <h3>📋 Histórico Diário</h3>
+      <h3>📋 Histórico de Lançamentos Diários</h3>
       <div id="listaMovimentacoes">
-        <p style="color:#64748b;text-align:center;font-size:14px;">Nenhuma movimentação diária registrada.</p>
+        <p style="color:#64748b;text-align:center;font-size:14px;">Nenhum lançamento registrado.</p>
       </div>
     </div>
 
+  </div>
+
+  <!-- ================= ABA 2: CONTAS FIXAS A PAGAR ================= -->
+  <div id="aba-fixas" class="conteudo-aba">
+    
+    <div class="resumo">
+      <div class="card-resumo">
+        <span>Total Fixas</span>
+        <strong class="val-total" id="valTotalFixas">R$ 0,00</strong>
+      </div>
+      <div class="card-resumo">
+        <span>Já Pago</span>
+        <strong class="val-pago" id="valPagoFixas">R$ 0,00</strong>
+      </div>
+      <div class="card-resumo">
+        <span>Pendente</span>
+        <strong class="val-pendente" id="valPendenteFixas">R$ 0,00</strong>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>➕ Adicionar Conta Fixa</h3>
+      <label>Nome da Conta</label>
+      <input type="text" id="descFixa" placeholder="Ex: Aluguel, Internet, Escola">
+
+      <label>Categoria</label>
+      <select id="catFixa">
+        <option value="Moradia">Moradia</option>
+        <option value="Contas Básicas">Contas Básicas</option>
+        <option value="Educação">Educação</option>
+        <option value="Assinaturas">Assinaturas</option>
+        <option value="Outros">Outros</option>
+      </select>
+
+      <label>Valor (R$)</label>
+      <input type="number" step="0.01" id="valorFixa" placeholder="0.00">
+
+      <label>Data de Vencimento</label>
+      <input type="date" id="vencimentoFixa">
+
+      <label>Status Inicial</label>
+      <select id="statusFixa">
+        <option value="pendente">Pendente ⏳</option>
+        <option value="pago">Pago ✅</option>
+      </select>
+
+      <button class="btn" onclick="adicionarContaFixa()">Salvar Conta Fixa</button>
+    </div>
+
+    <div class="card">
+      <h3>📋 Minhas Contas Fixas</h3>
+      <div id="listaContasFixas">
+        <p style="color:#64748b;text-align:center;font-size:14px;">Nenhuma conta fixa cadastrada.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ================= ABA 3: RELATÓRIO (GRÁFICO) ================= -->
+  <div id="aba-relatorio" class="conteudo-aba">
+    <div class="card">
+      <h3>📊 Distribuição de Gastos por Categoria</h3>
+      <p style="font-size:13px; color:#64748b; margin-bottom:20px; text-align:center;">Este gráfico agrupa automaticamente todas as suas saídas e contas fixas pagas por categoria.</p>
+      
+      <div class="grafico-container">
+        <canvas id="graficoPizza"></canvas>
+      </div>
+    </div>
   </div>
 
 </div>
 
 <script>
-// Dados salvos no navegador (LocalStorage)
-let contasPagar = JSON.parse(localStorage.getItem('raiza_contas_pagar')) || [];
-let movimentacoes = JSON.parse(localStorage.getItem('raiza_movimentacoes')) || [];
+// Carregamento de dados salvos
+let movimentacoesMes = JSON.parse(localStorage.getItem('raiza_mov_v2')) || [];
+let contasFixas = JSON.parse(localStorage.getItem('raiza_fixas_v2')) || [];
+let meuGrafico = null;
+
+const catsSaida = ["Alimentação", "Transporte", "Lazer", "Saúde", "Moradia", "Contas Básicas", "Compras", "Outros"];
+const catsEntrada = ["Salário", "Extra / Vendas", "Outros"];
+
+function atualizarCategoriasMov() {
+  const tipo = document.getElementById('tipoMov').value;
+  const selectCat = document.getElementById('CatMov');
+  selectCat.innerHTML = '';
+  
+  const lista = (tipo === 'saida') ? catsSaida : catsEntrada;
+  lista.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c;
+    opt.textContent = c;
+    selectCat.appendChild(opt);
+  });
+}
 
 function mudarAba(abaId, btn) {
   document.querySelectorAll('.conteudo-aba').forEach(el => el.classList.remove('active'));
@@ -290,6 +341,10 @@ function mudarAba(abaId, btn) {
 
   document.getElementById('aba-' + abaId).classList.add('active');
   btn.classList.add('active');
+
+  if (abaId === 'relatorio') {
+    gerarGrafico();
+  }
 }
 
 function formatarMoeda(valor) {
@@ -302,20 +357,91 @@ function formatarData(dataIso) {
   return `${partes[2]}/${partes[1]}/${partes[0]}`;
 }
 
-// ================= FUNÇÕES: CONTAS A PAGAR =================
-function atualizarPainelPagar() {
-  const listaEl = document.getElementById('listaContasPagar');
+// ================= LÓGICA: MOVIMENTAÇÕES DIÁRIAS =================
+function atualizarPainelMovimentacoes() {
+  const listaEl = document.getElementById('listaMovimentacoes');
+  listaEl.innerHTML = '';
+
+  let totalEntradas = 0;
+  let totalSaidas = 0;
+
+  if (movimentacoesMes.length === 0) {
+    listaEl.innerHTML = '<p style="color:#64748b;text-align:center;font-size:14px;">Nenhum lançamento registrado.</p>';
+  }
+
+  movimentacoesMes.forEach((m, index) => {
+    if (m.tipo === 'entrada') {
+      totalEntradas += m.valor;
+    } else {
+      totalSaidas += m.valor;
+    }
+
+    const div = document.createElement('div');
+    div.className = 'item-lista';
+    div.innerHTML = `
+      <div class="info">
+        <strong>${m.desc}</strong>
+        <small>${m.categoria} — ${m.tipo === 'entrada' ? '🟢 Entrada' : '🔴 Saída'}</small>
+      </div>
+      <div class="acoes">
+        <span style="font-weight:bold; color:${m.tipo === 'entrada' ? 'var(--verde)' : 'var(--vermelho)'}; margin-right:5px;">
+          ${m.tipo === 'entrada' ? '+' : '-'} ${formatarMoeda(m.valor)}
+        </span>
+        <button class="btn-apagar" onclick="removerMovimentacao(${index})" title="Excluir">🗑️</button>
+      </div>
+    `;
+    listaEl.appendChild(div);
+  });
+
+  let saldoAtual = totalEntradas - totalSaidas;
+
+  document.getElementById('valEntradasMov').textContent = formatarMoeda(totalEntradas);
+  document.getElementById('valSaidasMov').textContent = formatarMoeda(totalSaidas);
+  document.getElementById('valSaldoMov').textContent = formatarMoeda(saldoAtual);
+
+  localStorage.setItem('raiza_mov_v2', JSON.stringify(movimentacoesMes));
+}
+
+function adicionarMovimentacao() {
+  const tipo = document.getElementById('tipoMov').value;
+  const categoria = document.getElementById('CatMov').value;
+  const desc = document.getElementById('descMov').value.trim() || categoria;
+  const valor = parseFloat(document.getElementById('valorMov').value);
+
+  if (isNaN(valor) || valor <= 0) {
+    alert('Por favor, informe um valor válido.');
+    return;
+  }
+
+  movimentacoesMes.push({ tipo, categoria, desc, valor });
+
+  document.getElementById('descMov').value = '';
+  document.getElementById('valorMov').value = '';
+
+  atualizarPainelMovimentacoes();
+}
+
+function removerMovimentacao(index) {
+  if (confirm('Deseja apagar este lançamento?')) {
+    movimentacoesMes.splice(index, 1);
+    atualizarPainelMovimentacoes();
+  }
+}
+
+// ================= LÓGICA: CONTAS FIXAS =================
+function atualizarPainelFixas() {
+  const listaEl = document.getElementById('listaContasFixas');
   listaEl.innerHTML = '';
 
   let totalGeral = 0;
   let totalPago = 0;
   let totalPendente = 0;
 
-  if (contasPagar.length === 0) {
-    listaEl.innerHTML = '<p style="color:#64748b;text-align:center;font-size:14px;">Nenhuma conta cadastrada.</p>';
+  if (contasFixas.length === 0) {
+    listaEl.innerHTML = '<p style="color:#64748b;text-align:center;font-size:14px;">Nenhuma conta fixa cadastrada.</p>';
   }
 
-  contasPagar.forEach((c, index) => {
+  contasFixas.forEach((c, index) => {
     totalGeral += c.valor;
     if (c.status === 'pago') {
       totalPago += c.valor;
@@ -328,131 +454,126 @@ function atualizarPainelPagar() {
     div.innerHTML = `
       <div class="info">
         <strong>${c.desc}</strong>
-        <small>${c.vencimento ? 'Vencimento: ' + formatarData(c.vencimento) + ' — ' : ''}${formatarMoeda(c.valor)}</small>
+        <small>${c.categoria} ${c.vencimento ? '— Venc: ' + formatarData(c.vencimento) : ''} — ${formatarMoeda(c.valor)}</small>
       </div>
       <div class="acoes">
-        <button class="badge ${c.status}" onclick="alternarStatus(${index})" title="Clique para alternar">
+        <button class="badge ${c.status}" onclick="alternarStatusFixa(${index})" title="Alternar Status">
           ${c.status === 'pago' ? '✅ Pago' : '⏳ Pendente'}
         </button>
-        <button class="btn-apagar" onclick="removerContaPagar(${index})" title="Excluir">🗑️</button>
+        <button class="btn-apagar" onclick="removerContaFixa(${index})" title="Excluir">🗑️</button>
       </div>
     `;
     listaEl.appendChild(div);
   });
 
-  document.getElementById('valTotalPagar').textContent = formatarMoeda(totalGeral);
-  document.getElementById('valPago').textContent = formatarMoeda(totalPago);
-  document.getElementById('valPendente').textContent = formatarMoeda(totalPendente);
+  document.getElementById('valTotalFixas').textContent = formatarMoeda(totalGeral);
+  document.getElementById('valPagoFixas').textContent = formatarMoeda(totalPago);
+  document.getElementById('valPendenteFixas').textContent = formatarMoeda(totalPendente);
 
-  localStorage.setItem('raiza_contas_pagar', JSON.stringify(contasPagar));
+  localStorage.setItem('raiza_fixas_v2', JSON.stringify(contasFixas));
 }
 
-function adicionarContaPagar() {
-  const desc = document.getElementById('descPagar').value.trim();
-  const valor = parseFloat(document.getElementById('valorPagar').value);
-  const vencimento = document.getElementById('vencimentoPagar').value;
-  const status = document.getElementById('statusPagar').value;
+function adicionarContaFixa() {
+  const desc = document.getElementById('descFixa').value.trim();
+  const categoria = document.getElementById('catFixa').value;
+  const valor = parseFloat(document.getElementById('valorFixa').value);
+  const vencimento = document.getElementById('vencimentoFixa').value;
+  const status = document.getElementById('statusFixa').value;
 
   if (!desc || isNaN(valor) || valor <= 0) {
     alert('Por favor, preencha o nome da conta e um valor válido.');
     return;
   }
 
-  contasPagar.push({ desc, valor, vencimento, status });
+  contasFixas.push({ desc, categoria, valor, vencimento, status });
 
-  document.getElementById('descPagar').value = '';
-  document.getElementById('valorPagar').value = '';
-  document.getElementById('vencimentoPagar').value = '';
-  document.getElementById('statusPagar').value = 'pendente';
+  document.getElementById('descFixa').value = '';
+  document.getElementById('valorFixa').value = '';
+  document.getElementById('vencimentoFixa').value = '';
+  document.getElementById('statusFixa').value = 'pendente';
 
-  atualizarPainelPagar();
+  atualizarPainelFixas();
 }
 
-function alternarStatus(index) {
-  contasPagar[index].status = contasPagar[index].status === 'pendente' ? 'pago' : 'pendente';
-  atualizarPainelPagar();
+function alternarStatusFixa(index) {
+  contasFixas[index].status = contasFixas[index].status === 'pendente' ? 'pago' : 'pendente';
+  atualizarPainelFixas();
 }
 
-function removerContaPagar(index) {
-  if (confirm('Deseja realmente excluir esta conta?')) {
-    contasPagar.splice(index, 1);
-    atualizarPainelPagar();
+function removerContaFixa(index) {
+  if (confirm('Deseja excluir esta conta fixa?')) {
+    contasFixas.splice(index, 1);
+    atualizarPainelFixas();
   }
 }
 
-// ================= FUNÇÕES: MOVIMENTAÇÕES DIÁRIAS =================
-function atualizarPainelMovimentacoes() {
-  const listaEl = document.getElementById('listaMovimentacoes');
-  listaEl.innerHTML = '';
+// ================= LÓGICA: GRÁFICO DE PIZZA =================
+function gerarGrafico() {
+  // Somar gastos de saídas diárias + contas fixas pagas agrupadas por categoria
+  let totaisPorCategoria = {};
 
-  let totalEntradas = 0;
-  let totalSaidas = 0;
-
-  if (movimentacoes.length === 0) {
-    listaEl.innerHTML = '<p style="color:#64748b;text-align:center;font-size:14px;">Nenhuma movimentação diária registrada.</p>';
-  }
-
-  movimentacoes.forEach((m, index) => {
-    if (m.tipo === 'entrada') {
-      totalEntradas += m.valor;
-    } else {
-      totalSaidas += m.valor;
+  // Agregar saídas diárias
+  movimentacoesMes.forEach(m => {
+    if (m.tipo === 'saida') {
+      totaisPorCategoria[m.categoria] = (totaisPorCategoria[m.categoria] || 0) + m.valor;
     }
-
-    const div = document.createElement('div');
-    div.className = 'item-lista';
-    div.innerHTML = `
-      <div class="info">
-        <strong>${m.desc}</strong>
-        <small>${m.tipo === 'entrada' ? '🟢 Entrada' : '🔴 Saída'}</small>
-      </div>
-      <div class="acoes">
-        <span style="font-weight:bold; color:${m.tipo === 'entrada' ? 'var(--verde)' : 'var(--vermelho)'}; margin-right:5px;">
-          ${m.tipo === 'entrada' ? '+' : '-'} ${formatarMoeda(m.valor)}
-        </span>
-        <button class="btn-apagar" onclick="removerMovimentacao(${index})" title="Excluir">🗑️</button>
-      </div>
-    `;
-    listaEl.appendChild(div);
   });
 
-  let saldoDiario = totalEntradas - totalSaidas;
+  // Agregar contas fixas pagas
+  contasFixas.forEach(c => {
+    if (c.status === 'pago') {
+      totaisPorCategoria[c.categoria] = (totaisPorCategoria[c.categoria] || 0) + c.valor;
+    }
+  });
 
-  document.getElementById('valEntradas').textContent = formatarMoeda(totalEntradas);
-  document.getElementById('valSaidas').textContent = formatarMoeda(totalSaidas);
-  document.getElementById('valSaldoDiario').textContent = formatarMoeda(saldoDiario);
+  const labels = Object.keys(totaisPorCategoria);
+  const dados = Object.values(totaisPorCategoria);
 
-  localStorage.setItem('raiza_movimentacoes', JSON.stringify(movimentacoes));
-}
+  const ctx = document.getElementById('graficoPizza').getContext('2d');
 
-function adicionarMovimentacao() {
-  const tipo = document.getElementById('tipoMov').value;
-  const desc = document.getElementById('descMov').value.trim();
-  const valor = parseFloat(document.getElementById('valorMov').value);
+  if (meuGrafico) {
+    meuGrafico.destroy();
+  }
 
-  if (!desc || isNaN(valor) || valor <= 0) {
-    alert('Por favor, preencha a descrição e informe um valor válido.');
+  if (labels.length === 0) {
+    // Se não houver dados, desenha um gráfico vazio informativo
+    meuGrafico = new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: ['Sem gastos registrados'],
+        datasets: [{ data: [1], backgroundColor: ['#e2e8f0'] }]
+      }
+    });
     return;
   }
 
-  movimentacoes.push({ tipo, desc, valor });
-
-  document.getElementById('descMov').value = '';
-  document.getElementById('valorMov').value = '';
-
-  atualizarPainelMovimentacoes();
+  meuGrafico = new Chart(ctx, {
+    type: 'pie',
+    data: {
+      labels: labels,
+      datasets: [{
+        data: dados,
+        backgroundColor: [
+          '#2563eb', '#16a34a', '#d97706', '#dc2626', 
+          '#9333ea', '#0d9488', '#db2777', '#475569'
+        ]
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'bottom'
+        }
+      }
+    }
+  });
 }
 
-function removerMovimentacao(index) {
-  if (confirm('Deseja realmente apagar esta movimentação?')) {
-    movimentacoes.splice(index, 1);
-    atualizarPainelMovimentacoes();
-  }
-}
-
-// Inicializar tudo ao carregar
-atualizarPainelPagar();
+// Inicializações básicas
+atualizarCategoriasMov();
 atualizarPainelMovimentacoes();
+atualizarPainelFixas();
 </script>
 
 </body>
