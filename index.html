@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>RAÍZA FINANÇAS — Contas a Pagar</title>
+<title>RAÍZA FINANÇAS — Controle Completo</title>
 <style>
 :root{
   --azul:#173f8a;
@@ -42,6 +42,7 @@ header p{margin:5px 0 0;font-size:14px;opacity:0.9;}
   display:flex;
   gap:8px;
   margin-bottom:20px;
+  overflow-x:auto;
 }
 .btn-aba{
   flex:1;
@@ -53,6 +54,7 @@ header p{margin:5px 0 0;font-size:14px;opacity:0.9;}
   color:var(--texto);
   cursor:pointer;
   text-align:center;
+  white-space:nowrap;
 }
 .btn-aba.active{
   background:var(--azul);
@@ -87,6 +89,9 @@ header p{margin:5px 0 0;font-size:14px;opacity:0.9;}
 .val-total{color:var(--azul);}
 .val-pago{color:var(--verde);}
 .val-pendente{color:var(--amarelo);}
+.val-entrada{color:var(--verde);}
+.val-saida{color:var(--vermelho);}
+.val-saldo{color:var(--azul2);}
 
 /* CARDS E FORMULÁRIO */
 .card{
@@ -121,17 +126,17 @@ button.btn{
 }
 button.btn:hover{background:var(--azul);}
 
-/* LISTA */
-.conta-item{
+/* LISTAS */
+.item-lista{
   display:flex;
   justify-content:space-between;
   align-items:center;
   padding:12px 0;
   border-bottom:1px solid var(--borda);
 }
-.conta-item:last-child{border-bottom:0;}
-.conta-info strong{display:block;font-size:15px;}
-.conta-info small{color:#64748b;}
+.item-lista:last-child{border-bottom:0;}
+.info strong{display:block;font-size:15px;}
+.info small{color:#64748b;}
 
 .acoes{
   display:flex;
@@ -147,14 +152,8 @@ button.btn:hover{background:var(--azul);}
   border:0;
   cursor:pointer;
 }
-.badge.pendente{
-  background:#fef3c7;
-  color:#92400e;
-}
-.badge.pago{
-  background:#dcfce7;
-  color:#166534;
-}
+.badge.pendente{background:#fef3c7;color:#92400e;}
+.badge.pago{background:#dcfce7;color:#166534;}
 
 .btn-apagar{
   background:transparent;
@@ -171,7 +170,7 @@ button.btn:hover{background:var(--azul);}
 
 <header>
   <h1>📈 RAÍZA FINANÇAS</h1>
-  <p>Controle Inteligente de Contas</p>
+  <p>Controle de Contas e Movimentações Diárias</p>
 </header>
 
 <div class="container">
@@ -179,17 +178,16 @@ button.btn:hover{background:var(--azul);}
   <!-- ABAS DE NAVEGAÇÃO -->
   <div class="nav-abas">
     <button class="btn-aba active" onclick="mudarAba('pagar', this)">📅 Contas a Pagar</button>
-    <button class="btn-aba" onclick="mudarAba('novo', this)">➕ Adicionar Conta</button>
+    <button class="btn-aba" onclick="mudarAba('diarias', this)">💸 Movimentações Diárias</button>
   </div>
 
-  <!-- ABA: CONTAS A PAGAR -->
+  <!-- ================= ABA 1: CONTAS A PAGAR ================= -->
   <div id="aba-pagar" class="conteudo-aba active">
     
-    <!-- RESUMO -->
     <div class="resumo">
       <div class="card-resumo">
         <span>Total Geral</span>
-        <strong class="val-total" id="valTotal">R$ 0,00</strong>
+        <strong class="val-total" id="valTotalPagar">R$ 0,00</strong>
       </div>
       <div class="card-resumo">
         <span>Já Pago</span>
@@ -201,43 +199,90 @@ button.btn:hover{background:var(--azul);}
       </div>
     </div>
 
+    <!-- CADASTRAR CONTA -->
     <div class="card">
-      <h3>📋 Lista de Contas do Mês</h3>
-      <div id="listaContas">
+      <h3>➕ Adicionar Conta a Pagar</h3>
+      <label>Nome da Conta</label>
+      <input type="text" id="descPagar" placeholder="Ex: Aluguel, Luz, Internet">
+
+      <label>Valor (R$)</label>
+      <input type="number" step="0.01" id="valorPagar" placeholder="0.00">
+
+      <label>Data de Vencimento</label>
+      <input type="date" id="vencimentoPagar">
+
+      <label>Status Inicial</label>
+      <select id="statusPagar">
+        <option value="pendente">Pendente ⏳</option>
+        <option value="pago">Pago ✅</option>
+      </select>
+
+      <button class="btn" onclick="adicionarContaPagar()">Salvar Conta</button>
+    </div>
+
+    <!-- LISTA DE CONTAS -->
+    <div class="card">
+      <h3>📋 Minhas Contas a Pagar</h3>
+      <div id="listaContasPagar">
         <p style="color:#64748b;text-align:center;font-size:14px;">Nenhuma conta cadastrada.</p>
       </div>
     </div>
 
   </div>
 
-  <!-- ABA: ADICIONAR CONTA -->
-  <div id="aba-novo" class="conteudo-aba">
+  <!-- ================= ABA 2: MOVIMENTAÇÕES DIÁRIAS ================= -->
+  <div id="aba-diarias" class="conteudo-aba">
+    
+    <div class="resumo">
+      <div class="card-resumo">
+        <span>Entradas</span>
+        <strong class="val-entrada" id="valEntradas">R$ 0,00</strong>
+      </div>
+      <div class="card-resumo">
+        <span>Saídas</span>
+        <strong class="val-saida" id="valSaidas">R$ 0,00</strong>
+      </div>
+      <div class="card-resumo">
+        <span>Saldo do Dia</span>
+        <strong class="val-saldo" id="valSaldoDiario">R$ 0,00</strong>
+      </div>
+    </div>
+
+    <!-- CADASTRAR MOVIMENTAÇÃO -->
     <div class="card">
-      <h3>➕ Nova Conta a Pagar</h3>
+      <h3>➕ Nova Movimentação Diária</h3>
       
-      <label>Nome da Conta (ex: Aluguel, Luz, Cartão)</label>
-      <input type="text" id="desc" placeholder="Ex: Internet">
-
-      <label>Valor (R$)</label>
-      <input type="number" step="0.01" id="valor" placeholder="0.00">
-
-      <label>Data de Vencimento</label>
-      <input type="date" id="vencimento">
-
-      <label>Status Inicial</label>
-      <select id="status">
-        <option value="pendente">Pendente ⏳</option>
-        <option value="pago">Pago ✅</option>
+      <label>Tipo</label>
+      <select id="tipoMov">
+        <option value="entrada">Entrada (Receita) 🟢</option>
+        <option value="saida">Saída (Despesa) 🔴</option>
       </select>
 
-      <button class="btn" onclick="adicionarConta()">Salvar Conta</button>
+      <label>Descrição</label>
+      <input type="text" id="descMov" placeholder="Ex: Venda, Mercado, Uber...">
+
+      <label>Valor (R$)</label>
+      <input type="number" step="0.01" id="valorMov" placeholder="0.00">
+
+      <button class="btn" onclick="adicionarMovimentacao()">Salvar Movimentação</button>
     </div>
+
+    <!-- LISTA DE MOVIMENTAÇÕES -->
+    <div class="card">
+      <h3>📋 Histórico Diário</h3>
+      <div id="listaMovimentacoes">
+        <p style="color:#64748b;text-align:center;font-size:14px;">Nenhuma movimentação diária registrada.</p>
+      </div>
+    </div>
+
   </div>
 
 </div>
 
 <script>
-let contas = JSON.parse(localStorage.getItem('raiza_contas_pagar')) || [];
+// Dados salvos no navegador (LocalStorage)
+let contasPagar = JSON.parse(localStorage.getItem('raiza_contas_pagar')) || [];
+let movimentacoes = JSON.parse(localStorage.getItem('raiza_movimentacoes')) || [];
 
 function mudarAba(abaId, btn) {
   document.querySelectorAll('.conteudo-aba').forEach(el => el.classList.remove('active'));
@@ -257,19 +302,20 @@ function formatarData(dataIso) {
   return `${partes[2]}/${partes[1]}/${partes[0]}`;
 }
 
-function atualizarPainel() {
-  const listaEl = document.getElementById('listaContas');
+// ================= FUNÇÕES: CONTAS A PAGAR =================
+function atualizarPainelPagar() {
+  const listaEl = document.getElementById('listaContasPagar');
   listaEl.innerHTML = '';
 
   let totalGeral = 0;
   let totalPago = 0;
   let totalPendente = 0;
 
-  if (contas.length === 0) {
+  if (contasPagar.length === 0) {
     listaEl.innerHTML = '<p style="color:#64748b;text-align:center;font-size:14px;">Nenhuma conta cadastrada.</p>';
   }
 
-  contas.forEach((c, index) => {
+  contasPagar.forEach((c, index) => {
     totalGeral += c.valor;
     if (c.status === 'pago') {
       totalPago += c.valor;
@@ -278,67 +324,135 @@ function atualizarPainel() {
     }
 
     const div = document.createElement('div');
-    div.className = 'conta-item';
+    div.className = 'item-lista';
     div.innerHTML = `
-      <div class="conta-info">
+      <div class="info">
         <strong>${c.desc}</strong>
         <small>${c.vencimento ? 'Vencimento: ' + formatarData(c.vencimento) + ' — ' : ''}${formatarMoeda(c.valor)}</small>
       </div>
       <div class="acoes">
-        <button class="badge ${c.status}" onclick="alternarStatus(${index})" title="Clique para alternar status">
+        <button class="badge ${c.status}" onclick="alternarStatus(${index})" title="Clique para alternar">
           ${c.status === 'pago' ? '✅ Pago' : '⏳ Pendente'}
         </button>
-        <button class="btn-apagar" onclick="removerConta(${index})" title="Excluir">🗑️</button>
+        <button class="btn-apagar" onclick="removerContaPagar(${index})" title="Excluir">🗑️</button>
       </div>
     `;
     listaEl.appendChild(div);
   });
 
-  document.getElementById('valTotal').textContent = formatarMoeda(totalGeral);
+  document.getElementById('valTotalPagar').textContent = formatarMoeda(totalGeral);
   document.getElementById('valPago').textContent = formatarMoeda(totalPago);
   document.getElementById('valPendente').textContent = formatarMoeda(totalPendente);
 
-  localStorage.setItem('raiza_contas_pagar', JSON.stringify(contas));
+  localStorage.setItem('raiza_contas_pagar', JSON.stringify(contasPagar));
 }
 
-function adicionarConta() {
-  const desc = document.getElementById('desc').value.trim();
-  const valor = parseFloat(document.getElementById('valor').value);
-  const vencimento = document.getElementById('vencimento').value;
-  const status = document.getElementById('status').value;
+function adicionarContaPagar() {
+  const desc = document.getElementById('descPagar').value.trim();
+  const valor = parseFloat(document.getElementById('valorPagar').value);
+  const vencimento = document.getElementById('vencimentoPagar').value;
+  const status = document.getElementById('statusPagar').value;
 
   if (!desc || isNaN(valor) || valor <= 0) {
     alert('Por favor, preencha o nome da conta e um valor válido.');
     return;
   }
 
-  contas.push({ desc, valor, vencimento, status });
+  contasPagar.push({ desc, valor, vencimento, status });
 
-  // Limpar campos
-  document.getElementById('desc').value = '';
-  document.getElementById('valor').value = '';
-  document.getElementById('vencimento').value = '';
-  document.getElementById('status').value = 'pendente';
+  document.getElementById('descPagar').value = '';
+  document.getElementById('valorPagar').value = '';
+  document.getElementById('vencimentoPagar').value = '';
+  document.getElementById('statusPagar').value = 'pendente';
 
-  // Voltar para a aba de listagem automaticamente
-  mudarAba('pagar', document.querySelector('.btn-aba'));
-  atualizarPainel();
+  atualizarPainelPagar();
 }
 
 function alternarStatus(index) {
-  contas[index].status = contas[index].status === 'pendente' ? 'pago' : 'pendente';
-  atualizarPainel();
+  contasPagar[index].status = contasPagar[index].status === 'pendente' ? 'pago' : 'pendente';
+  atualizarPainelPagar();
 }
 
-function removerConta(index) {
+function removerContaPagar(index) {
   if (confirm('Deseja realmente excluir esta conta?')) {
-    contas.splice(index, 1);
-    atualizarPainel();
+    contasPagar.splice(index, 1);
+    atualizarPainelPagar();
   }
 }
 
-// Inicializar
-atualizarPainel();
+// ================= FUNÇÕES: MOVIMENTAÇÕES DIÁRIAS =================
+function atualizarPainelMovimentacoes() {
+  const listaEl = document.getElementById('listaMovimentacoes');
+  listaEl.innerHTML = '';
+
+  let totalEntradas = 0;
+  let totalSaidas = 0;
+
+  if (movimentacoes.length === 0) {
+    listaEl.innerHTML = '<p style="color:#64748b;text-align:center;font-size:14px;">Nenhuma movimentação diária registrada.</p>';
+  }
+
+  movimentacoes.forEach((m, index) => {
+    if (m.tipo === 'entrada') {
+      totalEntradas += m.valor;
+    } else {
+      totalSaidas += m.valor;
+    }
+
+    const div = document.createElement('div');
+    div.className = 'item-lista';
+    div.innerHTML = `
+      <div class="info">
+        <strong>${m.desc}</strong>
+        <small>${m.tipo === 'entrada' ? '🟢 Entrada' : '🔴 Saída'}</small>
+      </div>
+      <div class="acoes">
+        <span style="font-weight:bold; color:${m.tipo === 'entrada' ? 'var(--verde)' : 'var(--vermelho)'}; margin-right:5px;">
+          ${m.tipo === 'entrada' ? '+' : '-'} ${formatarMoeda(m.valor)}
+        </span>
+        <button class="btn-apagar" onclick="removerMovimentacao(${index})" title="Excluir">🗑️</button>
+      </div>
+    `;
+    listaEl.appendChild(div);
+  });
+
+  let saldoDiario = totalEntradas - totalSaidas;
+
+  document.getElementById('valEntradas').textContent = formatarMoeda(totalEntradas);
+  document.getElementById('valSaidas').textContent = formatarMoeda(totalSaidas);
+  document.getElementById('valSaldoDiario').textContent = formatarMoeda(saldoDiario);
+
+  localStorage.setItem('raiza_movimentacoes', JSON.stringify(movimentacoes));
+}
+
+function adicionarMovimentacao() {
+  const tipo = document.getElementById('tipoMov').value;
+  const desc = document.getElementById('descMov').value.trim();
+  const valor = parseFloat(document.getElementById('valorMov').value);
+
+  if (!desc || isNaN(valor) || valor <= 0) {
+    alert('Por favor, preencha a descrição e informe um valor válido.');
+    return;
+  }
+
+  movimentacoes.push({ tipo, desc, valor });
+
+  document.getElementById('descMov').value = '';
+  document.getElementById('valorMov').value = '';
+
+  atualizarPainelMovimentacoes();
+}
+
+function removerMovimentacao(index) {
+  if (confirm('Deseja realmente apagar esta movimentação?')) {
+    movimentacoes.splice(index, 1);
+    atualizarPainelMovimentacoes();
+  }
+}
+
+// Inicializar tudo ao carregar
+atualizarPainelPagar();
+atualizarPainelMovimentacoes();
 </script>
 
 </body>
