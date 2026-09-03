@@ -3,125 +3,910 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>RAÍZA FINANÇAS — Versão Atualizada</title>
+<title>RAÍZA FINANÇAS — Atualizado</title>
+<!-- Biblioteca Chart.js para o Gráfico de Pizza -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-:root {
-  --azul: #173f8a;
-  --azul2: #2563eb;
-  --verde: #16a34a;
-  --vermelho: #dc2626;
-  --amarelo: #d97706;
-  --bg: #f8fafc;
-  --texto: #1f2937;
-  --borda: #e2e8f0;
+:root{
+  --azul:#173f8a;
+  --azul2:#2563eb;
+  --verde:#16a34a;
+  --vermelho:#dc2626;
+  --amarelo:#d97706;
+  --bg:#f8fafc;
+  --texto:#1f2937;
+  --borda:#e2e8f0;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  background:var(--bg);
+  color:var(--texto);
+}
+header{
+  background:linear-gradient(120deg,var(--azul),var(--azul2));
+  color:#fff;
+  padding:20px;
+  text-align:center;
+}
+header h1{margin:0;font-size:22px;}
+header p{margin:5px 0 0;font-size:14px;opacity:0.9;}
+
+.container{
+  max-width:750px;
+  margin:20px auto;
+  padding:0 15px;
 }
 
-* { box-sizing: border-box; }
-
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-  background: var(--bg);
-  color: var(--texto);
-  display: flex;
-  min-height: 100vh;
+/* ABAS DE NAVEGAÇÃO FLEXÍVEIS (Vertical no Celular, Horizontal na Tela Maior) */
+.nav-abas{
+  display:flex;
+  gap:6px;
+  margin-bottom:20px;
+  overflow-x:auto;
+}
+@media (max-width: 600px) {
+  .nav-abas {
+    flex-direction: column;
+  }
+  .btn-aba {
+    text-align: left !important;
+    padding: 12px 15px !important;
+  }
 }
 
-/* MENU LATERAL VERTICAL */
-aside.sidebar {
-  width: 250px;
-  background: linear-gradient(180deg, var(--azul), #0f2a5e);
-  color: #fff;
-  display: flex;
-  flex-direction: column;
-  padding: 20px 10px;
-  flex-shrink: 0;
+.btn-aba{
+  flex:1;
+  padding:12px 10px;
+  background:#fff;
+  border:1px solid var(--borda);
+  border-radius:10px;
+  font-weight:bold;
+  color:var(--texto);
+  cursor:pointer;
+  text-align:center;
+  white-space:nowrap;
+  font-size:13px;
+}
+.btn-aba.active{
+  background:var(--azul);
+  color:#fff;
+  border-color:var(--azul);
 }
 
-aside.sidebar h1 {
-  font-size: 18px;
-  margin: 0 0 5px 10px;
-  color: #fff;
+.conteudo-aba{
+  display:none;
+}
+.conteudo-aba.active{
+  display:block;
 }
 
-aside.sidebar p {
-  font-size: 12px;
-  margin: 0 0 20px 10px;
-  opacity: 0.8;
+/* RESUMO */
+.resumo{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin-bottom:20px;
+}
+.card-resumo{
+  background:#fff;
+  padding:15px;
+  border-radius:12px;
+  text-align:center;
+  box-shadow:0 2px 5px rgba(0,0,0,0.05);
+  border:1px solid var(--borda);
+}
+.card-resumo span{display:block;font-size:12px;color:#64748b;margin-bottom:5px;}
+.card-resumo strong{font-size:14px;}
+.val-total{color:var(--azul);}
+.val-pago{color:var(--verde);}
+.val-pendente{color:var(--amarelo);}
+.val-entrada{color:var(--verde);}
+.val-saida{color:var(--vermelho);}
+.val-saldo{color:var(--azul2);}
+
+/* CARDS E FORMULÁRIO */
+.card{
+  background:#fff;
+  padding:20px;
+  border-radius:12px;
+  box-shadow:0 2px 5px rgba(0,0,0,0.05);
+  border:1px solid var(--borda);
+  margin-bottom:20px;
+}
+h3{margin-top:0;font-size:17px;color:var(--azul);}
+
+label{font-size:12px;font-weight:bold;display:block;margin-top:10px;color:#475569;}
+input, select{
+  width:100%;
+  padding:10px;
+  margin-top:4px;
+  border:1px solid var(--borda);
+  border-radius:8px;
+  font:inherit;
+}
+button.btn{
+  width:100%;
+  padding:12px;
+  background:var(--azul2);
+  color:#fff;
+  border:0;
+  border-radius:8px;
+  font-weight:bold;
+  margin-top:15px;
+  cursor:pointer;
+}
+button.btn:hover{background:var(--azul);}
+
+.btn-inline{
+  width:auto;
+  padding:10px 15px;
+  margin-top:4px;
 }
 
-.nav-vertical {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+/* LISTAS E CHIPS */
+.item-lista{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:12px 0;
+  border-bottom:1px solid var(--borda);
+}
+.item-lista:last-child{border-bottom:0;}
+.info strong{display:block;font-size:14px;}
+.info small{color:#64748b;}
+
+.acoes{
+  display:flex;
+  align-items:center;
+  gap:10px;
 }
 
-.btn-aba {
-  padding: 12px 15px;
-  background: transparent;
-  border: none;
-  border-radius: 8px;
-  font-weight: bold;
-  color: #cbd5e1;
-  cursor: pointer;
-  text-align: left;
-  font-size: 14px;
-  transition: all 0.2s;
+.badge{
+  padding:6px 12px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:bold;
+  border:0;
+  cursor:pointer;
+}
+.badge.pendente{background:#fef3c7;color:#92400e;}
+.badge.pago{background:#dcfce7;color:#166534;}
+
+.btn-apagar{
+  background:transparent;
+  color:#94a3b8;
+  border:0;
+  cursor:pointer;
+  font-size:16px;
+  padding:4px;
+}
+.btn-apagar:hover{color:var(--vermelho);}
+
+/* ESTILO DA LISTA DE CATEGORIAS */
+.cat-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:10px 0;
+  border-bottom:1px solid var(--borda);
+}
+.cat-row:last-child{border-bottom:0;}
+.cat-botoes{
+  display:flex;
+  gap:8px;
+}
+.btn-acao-cat{
+  background:#f1f5f9;
+  border:1px solid var(--borda);
+  padding:6px 10px;
+  border-radius:6px;
+  cursor:pointer;
+  font-size:13px;
+  font-weight:bold;
+}
+.btn-acao-cat:hover{background:#e2e8f0;}
+.btn-acao-cat.excluir{color:var(--vermelho);}
+
+/* BARRAS DE TETOS / METAS DE GASTO */
+.meta-item{ margin-bottom:15px; }
+.meta-info{ display:flex; justify-content:space-between; font-size:13px; font-weight:bold; margin-bottom:5px; }
+.progress-bar-container{
+  width:100%;
+  background:#e2e8f0;
+  border-radius:10px;
+  height:12px;
+  overflow:hidden;
+}
+.progress-bar{
+  height:100%;
+  background:var(--verde);
+  width:0%;
+  transition:width 0.3s;
+}
+.progress-bar.exceeded{ background:var(--vermelho); }
+
+/* GRÁFICO CONTAINER */
+.grafico-container{
+  max-width:320px;
+  margin:0 auto;
+  position:relative;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📈 RAÍZA FINANÇAS</h1>
+  <p>Controle Financeiro Pessoal</p>
+</header>
+
+<div class="container">
+
+  <!-- ABAS DE NAVEGAÇÃO -->
+  <div class="nav-abas">
+    <button class="btn-aba active" onclick="mudarAba('diarias', this)">💸 Lançamentos</button>
+    <button class="btn-aba" onclick="mudarAba('fixas', this)">📅 Contas Fixas</button>
+    <button class="btn-aba" onclick="mudarAba('pagamentos', this)">💳 Formas de Pag</button>
+    <button class="btn-aba" onclick="mudarAba('metas', this)">🎯 Teto de Gastos</button>
+    <button class="btn-aba" onclick="mudarAba('categorias', this)">🏷️ Categorias</button>
+    <button class="btn-aba" onclick="mudarAba('relatorio', this)">📊 Gráfico</button>
+  </div>
+
+  <!-- ================= ABA 1: LANÇAMENTOS DIÁRIOS ================= -->
+  <div id="aba-diarias" class="conteudo-aba active">
+    
+    <div class="resumo">
+      <div class="card-resumo">
+        <span>Entradas</span>
+        <strong class="val-entrada" id="valEntradasMov">R$ 0,00</strong>
+      </div>
+      <div class="card-resumo">
+        <span>Saídas</span>
+        <strong class="val-saida" id="valSaidasMov">R$ 0,00</strong>
+      </div>
+      <div class="card-resumo">
+        <span>Saldo Atual</span>
+        <strong class="val-saldo" id="valSaldoMov">R$ 0,00</strong>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>➕ Novo Lançamento Diário</h3>
+      
+      <label>Tipo</label>
+      <select id="tipoMov">
+        <option value="saida">Saída (Despesa) 🔴</option>
+        <option value="entrada">Entrada (Receita) 🟢</option>
+      </select>
+
+      <label>Categoria de Gasto</label>
+      <select id="CatMov"></select>
+
+      <label>Forma de Pagamento</label>
+      <select id="pagamentoMov">
+        <option value="Cartão de Crédito">Cartão de Crédito 💳</option>
+        <option value="Cartão de Débito">Cartão de Débito 💳</option>
+        <option value="PIX">PIX ⚡</option>
+        <option value="Dinheiro">Dinheiro 💵</option>
+      </select>
+
+      <label>Descrição (Opcional)</label>
+      <input type="text" id="descMov" placeholder="Ex: Supermercado, Salão, Uber...">
+
+      <label>Valor (R$)</label>
+      <input type="number" step="0.01" id="valorMov" placeholder="0.00">
+
+      <label>Número de Parcelas</label>
+      <input type="number" id="parcelasMov" value="1" min="1" placeholder="1 para à vista">
+
+      <button class="btn" onclick="adicionarMovimentacao()">Salvar Lançamento</button>
+    </div>
+
+    <div class="card">
+      <h3>📋 Histórico de Lançamentos</h3>
+      <div id="listaMovimentacoes">
+        <p style="color:#64748b;text-align:center;font-size:14px;">Nenhum lançamento registrado.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ================= ABA 2: CONTAS FIXAS A PAGAR ================= -->
+  <div id="aba-fixas" class="conteudo-aba">
+    
+    <div class="resumo">
+      <div class="card-resumo">
+        <span>Total Fixas</span>
+        <strong class="val-total" id="valTotalFixas">R$ 0,00</strong>
+      </div>
+      <div class="card-resumo">
+        <span>Já Pago</span>
+        <strong class="val-pago" id="valPagoFixas">R$ 0,00</strong>
+      </div>
+      <div class="card-resumo">
+        <span>Pendente</span>
+        <strong class="val-pendente" id="valPendenteFixas">R$ 0,00</strong>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>➕ Adicionar Conta Fixa</h3>
+      <label>Nome da Conta</label>
+      <input type="text" id="descFixa" placeholder="Ex: Aluguel, Internet">
+
+      <label>Categoria</label>
+      <select id="catFixa"></select>
+
+      <label>Forma de Pagamento</label>
+      <select id="pagamentoFixa">
+        <option value="PIX">PIX ⚡</option>
+        <option value="Cartão de Crédito">Cartão de Crédito 💳</option>
+        <option value="Cartão de Débito">Cartão de Débito 💳</option>
+        <option value="Dinheiro">Dinheiro 💵</option>
+      </select>
+
+      <label>Valor (R$)</label>
+      <input type="number" step="0.01" id="valorFixa" placeholder="0.00">
+
+      <label>Número de Parcelas</label>
+      <input type="number" id="parcelasFixa" value="1" min="1" placeholder="1 para à vista">
+
+      <label>Data de Vencimento</label>
+      <input type="date" id="vencimentoFixa">
+
+      <label>Status Inicial</label>
+      <select id="statusFixa">
+        <option value="pendente">Pendente ⏳</option>
+        <option value="pago">Pago ✅</option>
+      </select>
+
+      <button class="btn" onclick="adicionarContaFixa()">Salvar Conta Fixa</button>
+    </div>
+
+    <div class="card">
+      <h3>📋 Minhas Contas Fixas</h3>
+      <div id="listaContasFixas">
+        <p style="color:#64748b;text-align:center;font-size:14px;">Nenhuma conta fixa cadastrada.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ================= ABA 3: FORMAS DE PAGAMENTO ================= -->
+  <div id="aba-pagamentos" class="conteudo-aba">
+    <div class="card">
+      <h3>💳 Resumo por Método de Pagamento</h3>
+      <p style="font-size:13px; color:#64748b; margin-bottom:15px;">Acompanhe o total de gastos em cada opção de pagamento.</p>
+      <div id="listaPagamentos"></div>
+    </div>
+  </div>
+
+  <!-- ================= ABA 4: TETO DE GASTOS (METAS) ================= -->
+  <div id="aba-metas" class="conteudo-aba">
+    <div class="card">
+      <h3>🎯 Definição de Teto de Gastos</h3>
+      <label>Categoria</label>
+      <select id="metaCategoriaSelect"></select>
+
+      <label>Teto Máximo de Gasto (R$)</label>
+      <input type="number" step="0.01" id="metaValorInput" placeholder="Ex: 500.00">
+
+      <button class="btn" onclick="salvarMeta()">Definir Limite</button>
+    </div>
+
+    <div class="card">
+      <h3>📊 Acompanhamento dos Limites</h3>
+      <div id="listaMetasAcompanhamento"></div>
+    </div>
+  </div>
+
+  <!-- ================= ABA 5: GERENCIAR E EDITAR CATEGORIAS ================= -->
+  <div id="aba-categorias" class="conteudo-aba">
+    <div class="card">
+      <h3>🏷️ Gerenciar e Editar Categorias</h3>
+      <p style="font-size:13px; color:#64748b; margin-bottom:15px;">Adicione novas categorias ou clique em **Editar** para alterar o nome de uma existente.</p>
+      
+      <div style="display:flex; gap:10px;">
+        <input type="text" id="novaCatInput" placeholder="Nome da nova categoria...">
+        <button class="btn btn-inline" onclick="adicionarCategoria()">Adicionar</button>
+      </div>
+
+      <div style="margin-top:20px;" id="listaCategoriasGerenciar">
+        <!-- Linhas geradas via script -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= ABA 6: RELATÓRIO (GRÁFICO) ================= -->
+  <div id="aba-relatorio" class="conteudo-aba">
+    <div class="card">
+      <h3>📊 Distribuição de Gastos por Categoria</h3>
+      <p style="font-size:13px; color:#64748b; margin-bottom:20px; text-align:center;">Agrupa suas saídas diárias e contas fixas pagas com base nas suas categorias.</p>
+      
+      <div class="grafico-container">
+        <canvas id="graficoPizza"></canvas>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// Dados salvos no navegador
+let categorias = JSON.parse(localStorage.getItem('raiza_categorias_v4')) || ["Alimentação", "Beleza", "Moradia", "Transporte", "Lazer", "Saúde", "Contas Básicas"];
+let movimentacoesMes = JSON.parse(localStorage.getItem('raiza_mov_v4')) || [];
+let contasFixas = JSON.parse(localStorage.getItem('raiza_fixas_v4')) || [];
+let metas = JSON.parse(localStorage.getItem('raiza_metas_v4')) || {};
+let meuGrafico = null;
+
+function salvarTudo() {
+  localStorage.setItem('raiza_categorias_v4', JSON.stringify(categorias));
+  localStorage.setItem('raiza_mov_v4', JSON.stringify(movimentacoesMes));
+  localStorage.setItem('raiza_fixas_v4', JSON.stringify(contasFixas));
+  localStorage.setItem('raiza_metas_v4', JSON.stringify(metas));
 }
 
-.btn-aba:hover, .btn-aba.active {
-  background: rgba(255, 255, 255, 0.15);
-  color: #fff;
-  border-left: 4px solid #38bdf8;
+function atualizarSelectsCategorias() {
+  const selectMov = document.getElementById('CatMov');
+  const selectFixa = document.getElementById('catFixa');
+  const selectMeta = document.getElementById('metaCategoriaSelect');
+  
+  selectMov.innerHTML = '';
+  selectFixa.innerHTML = '';
+  if(selectMeta) selectMeta.innerHTML = '';
+
+  categorias.forEach(cat => {
+    const opt1 = document.createElement('option');
+    opt1.value = cat;
+    opt1.textContent = cat;
+    selectMov.appendChild(opt1);
+
+    const opt2 = document.createElement('option');
+    opt2.value = cat;
+    opt2.textContent = cat;
+    selectFixa.appendChild(opt2);
+
+    if(selectMeta) {
+      const opt3 = document.createElement('option');
+      opt3.value = cat;
+      opt3.textContent = cat;
+      selectMeta.appendChild(opt3);
+    }
+  });
 }
 
-/* CONTEÚDO PRINCIPAL */
-main.main-content {
-  flex: 1;
-  padding: 25px;
-  overflow-y: auto;
+function renderizarGerenciadorCategorias() {
+  const container = document.getElementById('listaCategoriasGerenciar');
+  container.innerHTML = '';
+
+  categorias.forEach((cat, index) => {
+    const div = document.createElement('div');
+    div.className = 'cat-row';
+    div.innerHTML = `
+      <strong style="font-size:14px;">${cat}</strong>
+      <div class="cat-botoes">
+        <button class="btn-acao-cat" onclick="editarCategoria(${index})">✏️ Editar</button>
+        <button class="btn-acao-cat excluir" onclick="removerCategoria(${index})">🗑️ Excluir</button>
+      </div>
+    `;
+    container.appendChild(div);
+  });
 }
 
-.container {
-  max-width: 850px;
-  margin: 0 auto;
+function adicionarCategoria() {
+  const input = document.getElementById('novaCatInput');
+  const nome = input.value.trim();
+
+  if (!nome) {
+    alert('Digite o nome da categoria.');
+    return;
+  }
+
+  if (categorias.includes(nome)) {
+    alert('Esta categoria já existe.');
+    return;
+  }
+
+  categorias.push(nome);
+  input.value = '';
+  salvarTudo();
+  atualizarSelectsCategorias();
+  renderizarGerenciadorCategorias();
 }
 
-.conteudo-aba { display: none; }
-.conteudo-aba.active { display: block; }
+function editarCategoria(index) {
+  const catAntiga = categorias[index];
+  const novoNome = prompt(`Editar nome da categoria "${catAntiga}":`, catAntiga);
 
-/* PAINÉIS DE RESUMO */
-.resumo {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-  gap: 12px;
-  margin-bottom: 20px;
+  if (novoNome === null) return; // Cancelou
+  const nomeLimpo = novoNome.trim();
+
+  if (!nomeLimpo) {
+    alert('O nome não pode ficar vazio.');
+    return;
+  }
+
+  if (categorias.includes(nomeLimpo) && nomeLimpo !== catAntiga) {
+    alert('Já existe uma categoria com esse nome.');
+    return;
+  }
+
+  // Atualizar o nome na lista de categorias
+  categorias[index] = nomeLimpo;
+
+  // Atualizar também nos lançamentos diários e contas fixas existentes
+  movimentacoesMes.forEach(m => {
+    if (m.categoria === catAntiga) m.categoria = nomeLimpo;
+  });
+
+  contasFixas.forEach(c => {
+    if (c.categoria === catAntiga) c.categoria = nomeLimpo;
+  });
+
+  if (metas[catAntiga] !== undefined) {
+    metas[nomeLimpo] = metas[catAntiga];
+    delete metas[catAntiga];
+  }
+
+  salvarTudo();
+  atualizarSelectsCategorias();
+  renderizarGerenciadorCategorias();
+  atualizarPainelMovimentacoes();
+  atualizarPainelFixas();
 }
 
-.card-resumo {
-  background: #fff;
-  padding: 15px;
-  border-radius: 12px;
-  text-align: center;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-  border: 1px solid var(--borda);
+function removerCategoria(index) {
+  if (categorias.length <= 1) {
+    alert('Você precisa manter pelo menos uma categoria.');
+    return;
+  }
+  if (confirm(`Deseja apagar a categoria "${categorias[index]}"?`)) {
+    const removida = categorias.splice(index, 1)[0];
+    delete metas[removida];
+    salvarTudo();
+    atualizarSelectsCategorias();
+    renderizarGerenciadorCategorias();
+  }
 }
 
-.card-resumo span { display: block; font-size: 12px; color: #64748b; margin-bottom: 5px; }
-.card-resumo strong { font-size: 15px; }
+function mudarAba(abaId, btn) {
+  document.querySelectorAll('.conteudo-aba').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.btn-aba').forEach(el => el.classList.remove('active'));
 
-.val-total { color: var(--azul); }
-.val-pago { color: var(--verde); }
-.val-pendente { color: var(--amarelo); }
-.val-entrada { color: var(--verde); }
-.val-saida { color: var(--vermelho); }
-.val-saldo { color: var(--azul2); }
+  document.getElementById('aba-' + abaId).classList.add('active');
+  btn.classList.add('active');
 
-/* CARDS E FORMULÁRIOS */
-.card {
-  background: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-  border:
+  if (abaId === 'pagamentos') atualizarPainelPagamentos();
+  if (abaId === 'metas') atualizarPainelMetas();
+  if (abaId === 'relatorio') gerarGrafico();
+}
+
+function formatarMoeda(valor) {
+  return (valor || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
+
+function formatarData(dataIso) {
+  if (!dataIso) return '';
+  const partes = dataIso.split('-');
+  return `${partes[2]}/${partes[1]}/${partes[0]}`;
+}
+
+// ================= LÓGICA: MOVIMENTAÇÕES =================
+function atualizarPainelMovimentacoes() {
+  const listaEl = document.getElementById('listaMovimentacoes');
+  listaEl.innerHTML = '';
+
+  let totalEntradas = 0;
+  let totalSaidas = 0;
+
+  if (movimentacoesMes.length === 0) {
+    listaEl.innerHTML = '<p style="color:#64748b;text-align:center;font-size:14px;">Nenhum lançamento registrado.</p>';
+  }
+
+  movimentacoesMes.forEach((m, index) => {
+    if (m.tipo === 'entrada') {
+      totalEntradas += m.valor;
+    } else {
+      totalSaidas += m.valor;
+    }
+
+    const parcTexto = m.parcelas && m.parcelas > 1 ? ` (${m.parcelas}x)` : '';
+    const pagTexto = m.pagamento ? ` • ${m.pagamento}` : '';
+
+    const div = document.createElement('div');
+    div.className = 'item-lista';
+    div.innerHTML = `
+      <div class="info">
+        <strong>${m.desc || m.categoria}${parcTexto}</strong>
+        <small>${m.categoria}${pagTexto} — ${m.tipo === 'entrada' ? '🟢 Entrada' : '🔴 Saída'}</small>
+      </div>
+      <div class="acoes">
+        <span style="font-weight:bold; color:${m.tipo === 'entrada' ? 'var(--verde)' : 'var(--vermelho)'}; margin-right:5px;">
+          ${m.tipo === 'entrada' ? '+' : '-'} ${formatarMoeda(m.valor)}
+        </span>
+        <button class="btn-apagar" onclick="removerMovimentacao(${index})" title="Excluir">🗑️</button>
+      </div>
+    `;
+    listaEl.appendChild(div);
+  });
+
+  let saldoAtual = totalEntradas - totalSaidas;
+
+  document.getElementById('valEntradasMov').textContent = formatarMoeda(totalEntradas);
+  document.getElementById('valSaidasMov').textContent = formatarMoeda(totalSaidas);
+  document.getElementById('valSaldoMov').textContent = formatarMoeda(saldoAtual);
+
+  salvarTudo();
+}
+
+function adicionarMovimentacao() {
+  const tipo = document.getElementById('tipoMov').value;
+  const categoria = document.getElementById('CatMov').value;
+  const pagamento = document.getElementById('pagamentoMov').value;
+  const desc = document.getElementById('descMov').value.trim();
+  const valor = parseFloat(document.getElementById('valorMov').value);
+  const parcelas = parseInt(document.getElementById('parcelasMov').value) || 1;
+
+  if (isNaN(valor) || valor <= 0) {
+    alert('Por favor, informe um valor válido.');
+    return;
+  }
+
+  movimentacoesMes.push({ tipo, categoria, pagamento, desc, valor, parcelas });
+
+  document.getElementById('descMov').value = '';
+  document.getElementById('valorMov').value = '';
+  document.getElementById('parcelasMov').value = '1';
+
+  atualizarPainelMovimentacoes();
+}
+
+function removerMovimentacao(index) {
+  if (confirm('Deseja apagar este lançamento?')) {
+    movimentacoesMes.splice(index, 1);
+    atualizarPainelMovimentacoes();
+  }
+}
+
+// ================= LÓGICA: CONTAS FIXAS =================
+function atualizarPainelFixas() {
+  const listaEl = document.getElementById('listaContasFixas');
+  listaEl.innerHTML = '';
+
+  let totalGeral = 0;
+  let totalPago = 0;
+  let totalPendente = 0;
+
+  if (contasFixas.length === 0) {
+    listaEl.innerHTML = '<p style="color:#64748b;text-align:center;font-size:14px;">Nenhuma conta fixa cadastrada.</p>';
+  }
+
+  contasFixas.forEach((c, index) => {
+    totalGeral += c.valor;
+    if (c.status === 'pago') {
+      totalPago += c.valor;
+    } else {
+      totalPendente += c.valor;
+    }
+
+    const parcTexto = c.parcelas && c.parcelas > 1 ? ` (${c.parcelas}x)` : '';
+    const pagTexto = c.pagamento ? ` • ${c.pagamento}` : '';
+
+    const div = document.createElement('div');
+    div.className = 'item-lista';
+    div.innerHTML = `
+      <div class="info">
+        <strong>${c.desc}${parcTexto}</strong>
+        <small>${c.categoria}${pagTexto} ${c.vencimento ? '— Venc: ' + formatarData(c.vencimento) : ''} — ${formatarMoeda(c.valor)}</small>
+      </div>
+      <div class="acoes">
+        <button class="badge ${c.status}" onclick="alternarStatusFixa(${index})" title="Alternar Status">
+          ${c.status === 'pago' ? '✅ Pago' : '⏳ Pendente'}
+        </button>
+        <button class="btn-apagar" onclick="removerContaFixa(${index})" title="Excluir">🗑️</button>
+      </div>
+    `;
+    listaEl.appendChild(div);
+  });
+
+  document.getElementById('valTotalFixas').textContent = formatarMoeda(totalGeral);
+  document.getElementById('valPagoFixas').textContent = formatarMoeda(totalPago);
+  document.getElementById('valPendenteFixas').textContent = formatarMoeda(totalPendente);
+
+  salvarTudo();
+}
+
+function adicionarContaFixa() {
+  const desc = document.getElementById('descFixa').value.trim();
+  const categoria = document.getElementById('catFixa').value;
+  const pagamento = document.getElementById('pagamentoFixa').value;
+  const valor = parseFloat(document.getElementById('valorFixa').value);
+  const parcelas = parseInt(document.getElementById('parcelasFixa').value) || 1;
+  const vencimento = document.getElementById('vencimentoFixa').value;
+  const status = document.getElementById('statusFixa').value;
+
+  if (!desc || isNaN(valor) || valor <= 0) {
+    alert('Por favor, preencha o nome da conta e um valor válido.');
+    return;
+  }
+
+  contasFixas.push({ desc, categoria, pagamento, valor, parcelas, vencimento, status });
+
+  document.getElementById('descFixa').value = '';
+  document.getElementById('valorFixa').value = '';
+  document.getElementById('parcelasFixa').value = '1';
+  document.getElementById('vencimentoFixa').value = '';
+  document.getElementById('statusFixa').value = 'pendente';
+
+  atualizarPainelFixas();
+}
+
+function alternarStatusFixa(index) {
+  contasFixas[index].status = contasFixas[index].status === 'pendente' ? 'pago' : 'pendente';
+  atualizarPainelFixas();
+}
+
+function removerContaFixa(index) {
+  if (confirm('Deseja excluir esta conta fixa?')) {
+    contasFixas.splice(index, 1);
+    atualizarPainelFixas();
+  }
+}
+
+// ================= LÓGICA: FORMAS DE PAGAMENTO =================
+function atualizarPainelPagamentos() {
+  const container = document.getElementById('listaPagamentos');
+  container.innerHTML = '';
+
+  const metodos = ['Cartão de Crédito', 'Cartão de Débito', 'PIX', 'Dinheiro'];
+
+  metodos.forEach(metodo => {
+    let total = 0;
+
+    movimentacoesMes.forEach(m => {
+      if (m.tipo === 'saida' && m.pagamento === metodo) total += m.valor;
+    });
+
+    contasFixas.forEach(c => {
+      if (c.pagamento === metodo && c.status === 'pago') total += c.valor;
+    });
+
+    const div = document.createElement('div');
+    div.className = 'item-lista';
+    div.innerHTML = `
+      <div class="info">
+        <strong>${metodo}</strong>
+        <small>Total consolidado de despesas efetuadas</small>
+      </div>
+      <div class="acoes">
+        <strong style="color:var(--azul); font-size:15px;">${formatarMoeda(total)}</strong>
+      </div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+// ================= LÓGICA: TETO DE GASTOS (METAS) =================
+function salvarMeta() {
+  const cat = document.getElementById('metaCategoriaSelect').value;
+  const valor = parseFloat(document.getElementById('metaValorInput').value);
+
+  if (isNaN(valor) || valor < 0) {
+    alert('Por favor, insira um valor válido para o teto.');
+    return;
+  }
+
+  metas[cat] = valor;
+  document.getElementById('metaValorInput').value = '';
+  salvarTudo();
+  atualizarPainelMetas();
+}
+
+function atualizarPainelMetas() {
+  const container = document.getElementById('listaMetasAcompanhamento');
+  container.innerHTML = '';
+
+  if (categorias.length === 0) {
+    container.innerHTML = '<p style="color:#64748b;text-align:center;">Nenhuma categoria encontrada.</p>';
+    return;
+  }
+
+  categorias.forEach(cat => {
+    const teto = metas[cat] || 0;
+    
+    let gastou = 0;
+    movimentacoesMes.forEach(m => {
+      if (m.tipo === 'saida' && m.categoria === cat) gastou += m.valor;
+    });
+    contasFixas.forEach(c => {
+      if (c.categoria === cat && c.status === 'pago') gastou += c.valor;
+    });
+
+    const porcentagem = teto > 0 ? Math.min((gastou / teto) * 100, 100) : 0;
+    const excedeu = teto > 0 && gastou > teto;
+
+    const div = document.createElement('div');
+    div.className = 'meta-item';
+    div.innerHTML = `
+      <div class="meta-info">
+        <span>${cat}</span>
+        <span>${formatarMoeda(gastou)} / ${teto > 0 ? formatarMoeda(teto) : 'Sem teto'}</span>
+      </div>
+      <div class="progress-bar-container">
+        <div class="progress-bar ${excedeu ? 'exceeded' : ''}" style="width: ${porcentagem}%"></div>
+      </div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+// ================= LÓGICA: GRÁFICO DE PIZZA =================
+function gerarGrafico() {
+  let totaisPorCategoria = {};
+
+  movimentacoesMes.forEach(m => {
+    if (m.tipo === 'saida') {
+      totaisPorCategoria[m.categoria] = (totaisPorCategoria[m.categoria] || 0) + m.valor;
+    }
+  });
+
+  contasFixas.forEach(c => {
+    if (c.status === 'pago') {
+      totaisPorCategoria[c.categoria] = (totaisPorCategoria[c.categoria] || 0) + c.valor;
+    }
+  });
+
+  const labels = Object.keys(totaisPorCategoria);
+  const dados = Object.values(totaisPorCategoria);
+
+  const ctx = document.getElementById('graficoPizza').getContext('2d');
+
+  if (meuGrafico) {
+    meuGrafico.destroy();
+  }
+
+  if (labels.length === 0) {
+    meuGrafico = new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: ['Sem gastos registrados'],
+        datasets: [{ data: [1], backgroundColor: ['#e2e8f0'] }]
+      }
+    });
+    return;
+  }
+
+  meuGrafico = new Chart(ctx, {
+    type: 'pie',
+    data: {
+      labels: labels,
+      datasets: [{
+        data: dados,
+        backgroundColor: [
+          '#2563eb', '#16a34a', '#d97706', '#dc2626', 
+          '#9333ea', '#0d9488', '#db2777', '#475569', '#ca8a04', '#0284c7'
+        ]
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'bottom'
+        }
+      }
+    }
+  });
+}
+
+// Inicializar aplicativo
+atualizarSelectsCategorias();
+renderizarGerenciadorCategorias();
+atualizarPainelMovimentacoes();
+atualizarPainelFixas();
+</script>
+
+</body>
+</html>
